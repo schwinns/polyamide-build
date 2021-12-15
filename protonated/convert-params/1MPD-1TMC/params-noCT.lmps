@@ -1,0 +1,129 @@
+Parameters for PA Membrane simulations from GAFF
+
+? atoms
+? bonds
+? angles
+? dihedrals
+? impropers
+
+11 atom types
+15 bond types
+21 angle types
+? dihedral types
+0 improper types
+
+19.929500 70.070500 xlo xhi
+19.929500 70.070500 ylo yhi
+19.929500 70.070500 zlo zhi
+
+Masses # id, mass [g/mol]
+
+ 1  12.0100000 # CA (carbon aromatic)
+ 2   1.0080000 # HA (hydrogen aromatic)
+ 3  12.0100000 # C  (carbon in carboxyl)
+ 4  16.0000000 # O  (oxygen)
+ 5  14.0100000 # N (nitrogen with 1 hydrogen)
+ 6   1.0080000 # HN (hydrogen on nitrogen)
+ 7  16.0000000 # OH (protonated carboxyl oxygen)
+ 8  14.0100000 # NH (nitrogen with 2 hydrogens)
+ 9   1.0080000 # HO (hydrogen on oxygen)
+ 10 12.0100000 # LC (crosslinked carbon)
+ 11 14.0100000 # LN (crosslinked nitrogen)
+
+
+Pair Coeffs # id, epsilon [kcal/mol], sigma [Angstroms]
+
+ 1  0.0860000 3.3996695 # CA
+ 2  0.0150000 2.5996425 # HA
+ 3  0.0860000 3.3996695 # C
+ 4  0.2100000 2.9599219 # O
+ 5  0.1700000 3.2499985 # N
+ 6  0.0157000 1.0690785 # HN
+ 7  0.2104000 3.0664734 # OH
+ 8  0.1700000 3.2499985 # NH
+ 9  0.0000000 0.0000000 # HO
+ 10 0.0860000 3.3996695 # LC
+ 11 0.1700000 3.2499985 # LN
+
+
+Bond Coeffs # id, K [kcal/mol/Ang^2], r0 [Ang]
+
+ 1  harmonic    4.61100000e+02    1.39840000e+00 # CA-CA
+ 2  harmonic    3.45900000e+02    1.49060000e+00 # CA-C
+ 3  harmonic    3.45800000e+02    1.08600000e+00 # CA-HA
+ 4  harmonic    6.37700000e+02    1.21830000e+00 # C-O
+ 5  harmonic    4.27600000e+02    1.37890000e+00 # LC-LN
+ 6  harmonic    3.84200000e+02    1.41210000e+00 # N-CA
+ 7  harmonic    4.03200000e+02    1.01290000e+00 # N-HN
+ 8  harmonic    4.17900000e+02    1.38590000e+00 # CA-NH
+ 9  harmonic    4.04600000e+02    1.01210000e+00 # NH-HN 
+ 10 harmonic    3.45900000e+02    1.49060000e+00 # CA-LC
+ 11 harmonic    6.37700000e+02    1.21830000e+00 # LC-O
+ 12 harmonic    3.84200000e+02    1.41210000e+00 # LN-CA
+ 13 harmonic    4.03200000e+02    1.01290000e+00 # LN-HN
+ 14 harmonic    4.00100000e+02    1.35130000e+00 # C-OH
+ 15 harmonic    3.71400000e+02    9.73000000e-01 # OH-HO
+
+
+Angle Coeffs # id, K [kcal/mol/rad^2], theta0 [degrees], K_UB [kcal/mol/Ang^2], r_UB [Ang]
+
+ 1  harmonic    6.66000000e+01    1.20020052e+02 # CA-CA-CA
+ 2  harmonic    4.82000000e+01    1.19880051e+02 # CA-CA-HA
+ 3  harmonic    6.87000000e+01    1.22600053e+02 # CA-C-O
+ 4  harmonic    6.43000000e+01    1.20330052e+02 # CA-CA-C
+ 5  harmonic    6.77000000e+01    1.15250050e+02 # CA-LC-LN (TMC-side)
+ 6  harmonic    6.38000000e+01    1.23710053e+02 # LC-LN-CA (MPD-side)
+ 7  harmonic    4.83000000e+01    1.17550051e+02 # LC-LN-HN
+ 8  harmonic    7.42000000e+01    1.23050053e+02 # O-LC-LN
+ 9  harmonic    6.79000000e+01    1.20190052e+02 # N-CA-CA
+ 10 harmonic    4.76000000e+01    1.16000050e+02 # CA-N-HN
+ 11 harmonic    6.83000000e+01    1.20950052e+02 # CA-CA-NH
+ 12 harmonic    4.84000000e+01    1.16070050e+02 # CA-NH-HN
+ 13 harmonic    7.79000000e+01    1.30250056e+02 # O-C-O (does not exist in protonated monomers)
+ 14 harmonic    4.01000000e+01    1.15120050e+02 # HN-NH-HN
+ 15 harmonic    6.87000000e+01    1.22600053e+02 # CA-LC-O
+ 16 harmonic    6.43000000e+01    1.20330052e+02 # CA-CA-LC
+ 17 harmonic    6.79000000e+01    1.20190052e+02 # LN-CA-CA
+ 18 harmonic    4.76000000e+01    1.16000050e+02 # CA-LN-HN
+ 19 harmonic    6.92000000e+01    1.13450049e+02 # CA-C-OH
+ 20 harmonic    4.99000000e+01    1.06550046e+02 # C-OH-HO
+ 21 harmonic    7.59000000e+01    1.22100052e+02 # O-C-OH
+
+Dihedral Coeffs # id, K [kcal/mol], n, d [degrees], weighting factor for 1-4 interactions
+
+ 1  charmm    3.62500000e+00         2       180         0 # CA-CA-CA-CA
+ 2  charmm    1.10000000e+00         2       180         0 # CA-CA-CA-HA (improper)
+ 3  charmm    1.00000000e+00         2       180         0 # CA-CA-C-O
+ 4  charmm    2.50000000e+00         2       180         0 # CA-LC-LN-CA
+ 5  charmm    1.05000000e+01         2       180         0 # CA-LC-LN-O
+ 6  charmm    4.50000000e-01         2       180         0 # LC-LN-CA-CA
+ 7  multi/harmonic    2.00000000e+00    2.00000000e+00    0.00000000e+00    0.00000000e+00    0.00000000e+00 # O-LC-LN-HN
+ 8  charmm    1.05000000e+00         2       180         0 # CA-CA-NH-HN
+ 9  charmm    3.62500000e+00         2       180         0 # CA-CA-CA-C
+ 10 charmm    3.62500000e+00         2       180         0 # CA-CA-CA-LC
+ 11 charmm    3.62500000e+00         2       180         0 # CA-CA-CA-HA
+ 12 charmm    3.62500000e+00         2       180         0 # C-CA-CA-HA
+ 13 charmm    3.62500000e+00         2       180         0 # LC-CA-CA-HA
+ 14 charmm    3.62500000e+00         2       180         0 # N-CA-CA-CA
+ 15 charmm    3.62500000e+00         2       180         0 # LN-CA-CA-CA
+ 16 charmm    3.62500000e+00         2       180         0 # N-CA-CA-HA
+ 17 charmm    3.62500000e+00         2       180         0 # LN-CA-CA-HA
+ 18 charmm    3.62500000e+00         2       180         0 # CA-CA-CA-NH
+ 19 charmm    3.62500000e+00         2       180         0 # HA-CA-CA-HA
+ 20 charmm    3.62500000e+00         2       180         0 # HA-CA-CA-NH
+ 21 charmm    1.10000000e+00         2       180         0 # CA-O-OH-C (improper) (changed from CA-O-O-C in unprotonated)
+ 22 charmm    1.10000000e+00         2       180         0 # CA-CA-CA-C (improper)
+ 23 charmm    1.10000000e+00         2       180         0 # CA-CA-CA-LC (improper)
+ 24 charmm    1.10000000e+00         2       180         0 # LC-CA-LN-HN (improper)
+ 25 charmm    1.10000000e+00         2       180         0 # CA-CA-CA-N (improper)
+ 26 charmm    1.10000000e+00         2       180         0 # CA-CA-CA-LN (improper)
+ 27 charmm    1.10000000e+00         2       180         0 # CA-CA-CA-NH (improper)
+ 28 charmm    1.10000000e+00         2       180         0 # CA-HN-NH-HN (improper)
+ 29 charmm    1.00000000e+00         2       180         0 # CA-CA-LC-O
+ 30 charmm    1.00000000e+00         2       180         0 # CA-CA-LC-LN
+ 31 charmm    2.50000000e+00         2       180         0 # CA-LC-LN-HN
+ 32 charmm    2.50000000e+00         2       180         0 # O-LC-LN-CA
+ 33 charmm    2.50000000e+00         2       180         0 # O-LC-LN-HN
+ 34 charmm    4.50000000e-01         2       180         0 # HN-LN-CA-CA
+ 35 charmm    2.30000000e+00         2       180         0 # CA-C-OH-HO
+ 36 multi/harmonic    1.90000000e+00    1.90000000e+00    0.00000000e+00    0.00000000e+00    0.00000000e+00 # O-C-OH-HO

@@ -1,0 +1,10 @@
+490 amine groups are crosslinked, 4 are uncrosslinked, and 0 are terminated
+490 carboxyl groups are crosslinked, 3 are uncrosslinked, and 101 are terminated
+Degree of crosslinking is 0.992
+
+Removing 60 atoms from final.lmps
+output.lmps has 6630 atoms
+output.lmps has 7120 bonds
+output.lmps has 11361 angles
+output.lmps has 19951 dihedrals
+output.lmps has 0 impropers

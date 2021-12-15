@@ -1,0 +1,14 @@
+#!/bin/bash
+#SBATCH -N 1 --ntasks-per-node=32
+#SBATCH -t 3:00:00
+#SBATCH -p RM-shared
+#SBATCH -J 'pre_polym'
+#SBATCH -o '%x.out'
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=nasc4134@colorado.edu
+
+module load intel/20.4
+module load intelmpi/20.4-intel20.4
+module load LAMMPS/29Oct20-intel
+
+mpirun -n 32 lmp -sf omp -pk omp 1 -in lmp.in

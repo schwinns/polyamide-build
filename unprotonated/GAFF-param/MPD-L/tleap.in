@@ -1,0 +1,7 @@
+source oldff/leaprc.ff99SB
+source leaprc.gaff
+SUS = loadmol2 MPD-L.mol2
+loadamberparams MPD-L.frcmod
+saveoff SUS sus.lib
+saveamberparm SUS MPD-L.prmtop MPD-L.inpcrd
+quit

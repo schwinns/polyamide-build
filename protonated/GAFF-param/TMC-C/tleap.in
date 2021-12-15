@@ -1,0 +1,7 @@
+source oldff/leaprc.ff99SB
+source leaprc.gaff
+SUS = loadmol2 TMC-C.mol2
+loadamberparams TMC-C.frcmod
+saveoff SUS sus.lib
+saveamberparm SUS TMC-C.prmtop TMC-C.inpcrd
+quit
