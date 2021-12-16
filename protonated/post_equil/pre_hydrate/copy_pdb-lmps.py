@@ -32,8 +32,8 @@ for line in lmp:
 # Write the coordinates from pdb file in lammps format
 n_waters = 1
 waters = {}
-maxes = [0,0,0]
-mins = [0,0,0]
+maxes = [-100,-100,-100]
+mins = [100,100,100]
 for line in pdb:
 
     if line.startswith('ATOM') and line.split()[3] == 'MOL': # write coordinates for the PA membrane and free OH's and H's
@@ -79,13 +79,11 @@ for line in pdb:
         if a_type == 'OW':
             waters[n_waters] = [a_id]
             a_type = '15'
-            # charge = '-0.830'
-            charge = '0.000'
+            charge = '-0.830'
         elif a_type == 'HW':
             waters[n_waters].append(a_id)
             a_type = '16'
-            # charge = '0.415'
-            charge = '0.000'
+            charge = '0.415'
         else:
             print('Bad atom type: %s' %(a_type))
             exit()
@@ -117,13 +115,11 @@ for line in pdb:
         if a_type == 'OW':
             waters[n_waters] = [a_id]
             a_type = '15'
-            # charge = '-0.830'
-            charge = '0.000'
+            charge = '-0.830'
         elif a_type == 'HW':
             waters[n_waters].append(a_id)
             a_type = '16'
-            # charge = '0.415'
-            charge = '0.000'
+            charge = '0.415'
         else:
             print('Bad atom type: %s' %(a_type))
             exit()

@@ -12,7 +12,7 @@ bond_style      hybrid harmonic
 angle_style     hybrid harmonic
 dihedral_style  hybrid charmm multi/harmonic
 special_bonds   lj 0.0 0.0 0.5 coul 0.0 0.0 0.83333333
-pair_style      lj/cut/coul/long 15.0
+pair_style      hybrid lj/cut/coul/long 15.0 lj/charmm/coul/long 10.0 15.0 15.0
 pair_modify     tail yes
 pair_modify     mix arithmetic
 kspace_style    pppm 1e-8
@@ -21,22 +21,23 @@ kspace_style    pppm 1e-8
 read_data        data.lmps
 
 # Coefficients
-pair_coeff 1 1 0.0860000 3.3996695 # CA
-pair_coeff 2 2 0.0150000 2.5996425 # HA
-pair_coeff 3 3 0.0860000 3.3996695 # C
-pair_coeff 4 4 0.2100000 2.9599219 # O
-pair_coeff 5 5 0.1700000 3.2499985 # N
-pair_coeff 6 6 0.0157000 1.0690785 # HN
-pair_coeff 7 7 0.2104000 3.0664734 # OH
-pair_coeff 8 8 0.1700000 3.2499985 # NH
-pair_coeff 9 9 0.0000000 0.0000000 # HO
-pair_coeff 10 10 0.0860000 3.3996695 # LC
-pair_coeff 11 11 0.1700000 3.2499985 # LN
-pair_coeff 12 12 0.0860000 3.3996695 # CT
-pair_coeff 13 13 0.0157000 1.0690785 # H
-pair_coeff 14 14 0.2104000 3.0664734 # OR
-pair_coeff 15 15 0.1020000 3.1880000 # OW
-pair_coeff 16 16 0.0000000 0.0000000 # HW
+pair_coeff 1 1 lj/cut/coul/long 0.0860000 3.3996695 # CA
+pair_coeff 2 2 lj/cut/coul/long 0.0150000 2.5996425 # HA
+pair_coeff 3 3 lj/cut/coul/long 0.0860000 3.3996695 # C
+pair_coeff 4 4 lj/cut/coul/long 0.2100000 2.9599219 # O
+pair_coeff 5 5 lj/cut/coul/long 0.1700000 3.2499985 # N
+pair_coeff 6 6 lj/cut/coul/long 0.0157000 1.0690785 # HN
+pair_coeff 7 7 lj/cut/coul/long 0.2104000 3.0664734 # OH
+pair_coeff 8 8 lj/cut/coul/long 0.1700000 3.2499985 # NH
+pair_coeff 9 9 lj/cut/coul/long 0.0000000 0.0000000 # HO
+pair_coeff 10 10 lj/cut/coul/long 0.0860000 3.3996695 # LC
+pair_coeff 11 11 lj/cut/coul/long 0.1700000 3.2499985 # LN
+pair_coeff 12 12 lj/cut/coul/long 0.0860000 3.3996695 # CT
+pair_coeff 13 13 lj/cut/coul/long 0.0157000 1.0690785 # H
+pair_coeff 14 14 lj/cut/coul/long 0.2104000 3.0664734 # OR
+pair_coeff 15 15 lj/charmm/coul/long 0.1020000 3.1880000 # OW
+pair_coeff 16 16 lj/charmm/coul/long 0.0000000 0.0000000 # HW
+pair_coeff 15 16 lj/charmm/coul/long 0.0000000 0.0000000 # OW-HW
 
 bond_coeff 1  harmonic    4.61100000e+02    1.39840000e+00 # CA-CA
 bond_coeff 2  harmonic    3.45900000e+02    1.49060000e+00 # CA-C
@@ -139,10 +140,10 @@ thermo           100
 
 # Minimization Step
 min_style        sd
-minimize         1.0e-3 1.0e-3 1000 100000
+minimize         1.0e-4 1.0e-4 5000 100000
 min_style        cg
 min_modify       line quadratic
-minimize         1.0e-4 1.0e-4 1000 100000
+minimize         1.0e-5 1.0e-5 5000 100000
 
 # Data file output
 write_data       min.lmps
