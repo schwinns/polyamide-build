@@ -39,12 +39,12 @@ end structure
 
 # WATER BOTTOM LAYER (from lo-60 to lo in z)
 structure HOH_em1.pdb
-  number 1612
+  number 1000
   inside box 11.246593 11.246593 -48.753407 53.753407 53.753407 11.246593
 end structure
 
 # WATER TOP LAYER (from hi to hi+60)
 structure HOH_em1.pdb
-  number 1612
+  number 1000
   inside box 11.246593 11.246593 11.246593 53.753407 53.753407 113.753407
 end structure
