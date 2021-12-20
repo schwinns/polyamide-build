@@ -34,6 +34,7 @@ n_waters = 1
 waters = {}
 maxes = [-100,-100,-100]
 mins = [100,100,100]
+n_atoms = 0
 for line in pdb:
 
     if line.startswith('ATOM') and line.split()[3] == 'MOL': # write coordinates for the PA membrane and free OH's and H's
@@ -54,7 +55,9 @@ for line in pdb:
             elif xyz[d] < mins[d]:
                 mins[d] = xyz[d]
 
-        new_line = " %s %s %s %s %s %s %s\n" %(a_id, mol_id, a_type, charge, x, y, z)
+        n_atoms += 1
+
+        new_line = " %d %s %s %s %s %s %s\n" %(n_atoms, mol_id, a_type, charge, x, y, z)
         out.write(new_line)
         n_mol = int(mol_id)
 
@@ -75,6 +78,8 @@ for line in pdb:
             elif xyz[d] < mins[d]:
                 mins[d] = xyz[d]
 
+        n_atoms += 1
+
         # Assign types and charges for water molecules, create dictionary of water molecules
         if a_type == 'OW':
             waters[n_waters] = [a_id]
@@ -91,7 +96,7 @@ for line in pdb:
         if len(waters[n_waters]) == 3:
             n_waters += 1
 
-        new_line = " %s %s %s %s %s %s %s\n" %(a_id, mol_id, a_type, charge, x, y, z)
+        new_line = " %s %s %s %s %s %s %s\n" %(n_atoms, mol_id, a_type, charge, x, y, z)
         out.write(new_line)
 
     elif line.startswith('ATOM'): # write coordinates of water molecules where molecule number touches A/B
@@ -111,6 +116,8 @@ for line in pdb:
             elif xyz[d] < mins[d]:
                 mins[d] = xyz[d]
 
+        n_atoms += 1
+
         # Assign types and charges for water molecules, create dictionary of water molecules
         if a_type == 'OW':
             waters[n_waters] = [a_id]
@@ -127,10 +134,9 @@ for line in pdb:
         if len(waters[n_waters]) == 3:
             n_waters += 1
 
-        new_line = " %s %s %s %s %s %s %s\n" %(a_id, mol_id, a_type, charge, x, y, z)
+        new_line = " %s %s %s %s %s %s %s\n" %(n_atoms, mol_id, a_type, charge, x, y, z)
         out.write(new_line)
         
-
 print('%d waters in the system\n' %(n_waters-1))
 print('Box dimensions should be:')
 print('\t%f %f xlo xhi' %(mins[0], maxes[0]))
@@ -195,6 +201,6 @@ out.write('\nDihedrals\n')
 for line in lmp:
     out.write(line)
 
-print('\n%s atoms' %(a_id))
+print('\n%s atoms' %(n_atoms))
 print('%d bonds' %(n_bonds))
 print('%d angles' %(n_angles))

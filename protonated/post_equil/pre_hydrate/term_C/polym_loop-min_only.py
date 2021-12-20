@@ -158,10 +158,10 @@ def polym_step():
                         shutil.rmtree(path)
                 return 1
 
-            # Molecular dynamics
-            setup_md(attempts)
-            md(0)
-            attempts += 1
+            # # Molecular dynamics
+            # setup_md(attempts)
+            # md(0)
+            # attempts += 1
 
         # Error
         else:
