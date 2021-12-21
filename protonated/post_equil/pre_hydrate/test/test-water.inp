@@ -5,7 +5,7 @@
 # Every atom from diferent molecules will be far from each other at
 # least 2.0 Anstrons at the solution.
 
-tolerance 2.0
+tolerance 3.0
 
 # CHANGING THE INITIAL RANDOM SEED
 
@@ -26,25 +26,15 @@ filetype pdb
 
 # The output pdb file
 
-output hydrated_close.pdb
+output waters-small.pdb
 
 # The first three numbers are the minimum x, y, z coordinates for this
 # molecules, the last three are maximum coordinates. The box defined
 
-# MONOMER -- TAKE CONVERGED STRUCTURE FROM slab.pdb
-structure slab_term-grps.pdb (about 44 x 44 x 44 box)
-  number 1
-  fixed 0. 0. 0. 0. 0. 0.
+# WATER 
+structure ../HOH_em1.pdb
+  number 10
+  inside box 0 0 0 10 10 10
 end structure
 
-# WATER BOTTOM LAYER (from (hi+lo)/2 - 35 to (hi+lo)/2 in z)
-structure HOH_em1.pdb 
-  number 150
-  inside box 11.246593 11.246593 -2.5 53.753407 53.753407 32.5
-end structure
 
-# WATER TOP LAYER (from (hi+lo)/2 to (hi+lo)/2 + 35 in z)
-structure HOH_em1.pdb 
-  number 150
-  inside box 11.246593 11.246593 32.5 53.753407 53.753407 67.5
-end structure

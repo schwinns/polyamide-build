@@ -131,7 +131,8 @@ dihedral_coeff 42 charmm    1.10000000e+00         2       180         0 # CA-CA
 dielectric       1.0
 neighbor         2.0 bin
 neigh_modify     delay 0 every 1 check yes
-timestep         1.0
+#timestep        1.0
+timestep         0.5
 run_style        verlet
 
 # Output
@@ -140,10 +141,11 @@ thermo           500
 
 # MD step
 group water type 15 16
-fix              1 all npt temp 300 300 100.0 iso 1 1 100.0
-fix              2 water shake 0.0001 20 10 b 19 a 24
+fix              1 all npt temp 300 300 100.0 z 1 1 100.0
+#fix              2 water shake 1e-6 200 0 b 19 a 24
 velocity         all create 300 58447419
-run              20000
+run              40000
+#run              20000
 unfix            1
 
 # Data file output

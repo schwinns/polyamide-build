@@ -1,0 +1,36 @@
+HEADER 
+TITLE     Built with Packmol                                             
+REMARK   Packmol generated pdb file 
+REMARK   Home-Page: http://m3g.iqm.unicamp.br/packmol
+REMARK
+ATOM      1  OW  SOL A   1       5.909   1.219   3.473  1.00  0.00              
+ATOM      2  HW SOL  A   1       6.311   0.199   3.567 1.00  0.00               
+ATOM      3  HW SOL  A   1       6.179   1.839   2.605 1.00  0.00               
+ATOM      4  OW  SOL A   2       9.822   6.755   9.079  1.00  0.00              
+ATOM      5  HW SOL  A   2       9.568   5.686   9.025 1.00  0.00               
+ATOM      6  HW SOL  A   2       9.986   7.329   8.155 1.00  0.00               
+ATOM      7  OW  SOL A   3       2.013   0.081   4.720  1.00  0.00              
+ATOM      8  HW SOL  A   3       2.904  -0.008   4.081 1.00  0.00               
+ATOM      9  HW SOL  A   3       2.114   0.045   5.815 1.00  0.00               
+ATOM     10  OW  SOL A   4       3.757   8.183   6.042  1.00  0.00              
+ATOM     11  HW SOL  A   4       4.484   8.853   5.558 1.00  0.00               
+ATOM     12  HW SOL  A   4       3.950   7.804   7.057 1.00  0.00               
+ATOM     13  OW  SOL A   5       0.297   4.197   3.194  1.00  0.00              
+ATOM     14  HW SOL  A   5       0.832   3.418   3.758 1.00  0.00               
+ATOM     15  HW SOL  A   5       0.853   5.035   2.748 1.00  0.00               
+ATOM     16  OW  SOL A   6       6.058   3.827   7.105  1.00  0.00              
+ATOM     17  HW SOL  A   6       5.199   3.220   6.781 1.00  0.00               
+ATOM     18  HW SOL  A   6       6.957   3.889   6.473 1.00  0.00               
+ATOM     19  OW  SOL A   7       3.657   6.776   2.793  1.00  0.00              
+ATOM     20  HW SOL  A   7       2.975   7.634   2.890 1.00  0.00               
+ATOM     21  HW SOL  A   7       4.596   6.880   2.229 1.00  0.00               
+ATOM     22  OW  SOL A   8       0.680   5.191   6.553  1.00  0.00              
+ATOM     23  HW SOL  A   8       0.994   6.236   6.416 1.00  0.00               
+ATOM     24  HW SOL  A   8       0.678   4.744   7.558 1.00  0.00               
+ATOM     25  OW  SOL A   9       2.417   0.828   9.991  1.00  0.00              
+ATOM     26  HW SOL  A   9       1.705   1.664   9.923 1.00  0.00               
+ATOM     27  HW SOL  A   9       2.412   0.038   9.226 1.00  0.00               
+ATOM     28  OW  SOL A  10       2.312   9.935  10.017  1.00  0.00              
+ATOM     29  HW SOL  A  10       1.347   9.819   9.501 1.00  0.00               
+ATOM     30  HW SOL  A  10       3.249   9.921   9.441 1.00  0.00               
+END

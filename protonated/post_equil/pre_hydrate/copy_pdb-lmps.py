@@ -82,11 +82,11 @@ for line in pdb:
 
         # Assign types and charges for water molecules, create dictionary of water molecules
         if a_type == 'OW':
-            waters[n_waters] = [a_id]
+            waters[n_waters] = [n_atoms]
             a_type = '15'
             charge = '-0.830'
         elif a_type == 'HW':
-            waters[n_waters].append(a_id)
+            waters[n_waters].append(n_atoms)
             a_type = '16'
             charge = '0.415'
         else:
@@ -120,11 +120,11 @@ for line in pdb:
 
         # Assign types and charges for water molecules, create dictionary of water molecules
         if a_type == 'OW':
-            waters[n_waters] = [a_id]
+            waters[n_waters] = [n_atoms]
             a_type = '15'
             charge = '-0.830'
         elif a_type == 'HW':
-            waters[n_waters].append(a_id)
+            waters[n_waters].append(n_atoms)
             a_type = '16'
             charge = '0.415'
         else:
@@ -147,6 +147,7 @@ out.write('\n')
 for line in lmp: # skip to bonding info
     if line.startswith('Bonds'):
         out.write(line)
+        out.write('\n')
         break
 
 # Write Bonds section
@@ -159,8 +160,6 @@ for line in lmp:
         n_bonds = int(line.split()[0])
         out.write(line)
 
-    else: # write blank lines
-        out.write(line)
 
 # Add new bonds for waters
 for mol in waters:
@@ -173,7 +172,7 @@ for mol in waters:
         new_line = " %d %d %s %s\n" %(n_bonds, 19, OW, waters[mol][a+1])
         out.write(new_line)
 
-out.write('\nAngles\n')
+out.write('\nAngles\n\n')
 
 # Write Angles section
 for line in lmp:
@@ -185,8 +184,6 @@ for line in lmp:
         n_angles = int(line.split()[0])
         out.write(line)
 
-    else: # write blank lines
-        out.write(line)
 
 # Add new angles for waters
 for mol in waters:
@@ -195,7 +192,7 @@ for mol in waters:
     new_line = " %d %d %s %s %s\n" %(n_angles, 24, waters[mol][0], waters[mol][1], waters[mol][2])
     out.write(new_line)
 
-out.write('\nDihedrals\n')
+out.write('\nDihedrals\n\n')
 
 # Write Dihedrals section
 for line in lmp:
