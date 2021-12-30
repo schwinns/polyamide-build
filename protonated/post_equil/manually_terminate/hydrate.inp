@@ -1,0 +1,50 @@
+#
+# PA membrane with water over and below
+#
+
+# Every atom from diferent molecules will be far from each other at
+# least 2.0 Anstrons at the solution.
+
+tolerance 2.0
+
+# CHANGING THE INITIAL RANDOM SEED
+
+seed 100000
+
+# INCREASING NUMBER OF LOOPS PER MOLECULE 
+
+nloop 200
+
+# INCREASING NUMBER OF CYCLES
+
+nloop0 1000
+
+# Coordinate file types will be in pdb format (keyword not required for
+# pdb file format, but required for tinker, xyz or moldy).
+
+filetype pdb
+
+# The output pdb file
+
+output hydrated.pdb
+
+# The first three numbers are the minimum x, y, z coordinates for this
+# molecules, the last three are maximum coordinates. The box defined
+
+# MONOMER -- TAKE CONVERGED STRUCTURE FROM slab.pdb
+structure slab.pdb (about 44 x 44 x 44 box)
+  number 1
+  fixed 0. 0. 0. 0. 0. 0.
+end structure
+
+# WATER BOTTOM LAYER (from (lo - 50 to lo in z)
+structure HOH.pdb 
+  number 1612
+  inside box 11.246593 11.246593 -38.753407 53.753407 53.753407 11.246593
+end structure
+
+# WATER TOP LAYER (from hi to hi + 50 in z)
+structure HOH.pdb 
+  number 1612
+  inside box 11.246593 11.246593 53.753407 53.753407 53.753407 103.753407
+end structure
