@@ -396,15 +396,70 @@ for bond in bonds:
             elif atoms[a]['type'] == '6':
                 HN_MPD = a # HN-NH (original)
 
-        shift_direction = (atoms[LC]['coords'] - atoms[LN]['coords']) / np.linalg.norm(atoms[LC]['coords'] - atoms[LN]['coords']) # LC --> LN
+        # Generate neighbor lists for new HN and OH
+        HN = dict(atoms[LC])
+        OH = dict(atoms[LN])
+
+        HN_neighbors = []
+        for a in atoms:
+            sq_dist = np.dot(atoms[a]['coords'] - HN['coords'],atoms[a]['coords'] - HN['coords'])
+            if np.sqrt(sq_dist) < 5: # less than 5 angstroms away, it is a neighbor
+                # print('Atom %s of type %s distance: %s' %(a, atoms[a]['type'], np.sqrt(sq_dist)))
+                HN_neighbors.append(a)
+
+        OH_neighbors = []
+        for a in atoms:
+            sq_dist = np.dot(atoms[a]['coords'] - OH['coords'],atoms[a]['coords'] - OH['coords'])
+            if np.sqrt(sq_dist) < 5: # less than 5 angstroms away, it is a neighbor
+                OH_neighbors.append(a)
 
         ####### HN ADDITION #######
         # Add HN to atoms
-        HN = dict(atoms[LC])
         HN['type'] = '6' # change type
         HN['bonded'] = [LN] # only bonded to broken LN
         HN['bonds'] = {str(n_bonds + 1) : LN}
-        HN['coords'] += 1.3789 / 2 * shift_direction # shift half a bond length towards LN
+    
+        # Place the new atoms without overlapping
+        close = True
+        i = 0
+        xyz = np.array([0,0,0])
+        while close:
+
+            i += 1
+            min_dist = 100
+
+            # check the distance from neighbors
+            for a in HN_neighbors: 
+                sq_dist = np.dot(atoms[a]['coords'] - HN['coords'],atoms[a]['coords'] - HN['coords'])
+                
+                if min_dist > np.sqrt(sq_dist): # save the smallest distance between neighbors
+                    min_dist = np.sqrt(sq_dist)
+
+                if min_dist < 2:
+                    close = True
+                else:
+                    close = False
+
+            # if i % 100 == 0:
+            #             print('\t%d: %s --> %s Ang' %(i, HN['coords'], min_dist))
+
+            if close: # if still close shift slightly in random direction
+                xyz[0] = random.choice([-1,0,1])
+                xyz[1] = random.choice([-1,0,1])
+                xyz[2] = random.choice([-1,0,1])
+                HN['coords'] = HN['coords'] + xyz*0.1
+            
+            elif args.verbose:
+                print('Placed HN atom %d after %d iterations' %(n_atoms+1, i))
+                break
+
+            else:
+                break
+
+            if i == 5000:
+                print('Could not place HN atom %d after %d iterations. Exiting...' %(n_atoms+1, i))
+                exit()
+            
         n_atoms += 1
         atoms[str(n_atoms)] = HN
 
@@ -452,11 +507,47 @@ for bond in bonds:
         }
 
         ####### OH ADDITION #######
-        OH = dict(atoms[LN])
         OH['type'] = '7' # change type
         OH['bonded'] = [LC] # only bonded to broken LN
         OH['bonds'] = {str(n_bonds + 1) : LC}
-        OH['coords'] -= 1.3789 / 2 * shift_direction # shift half a bond length towards LC
+
+        # Place the new atoms without overlapping
+        close = True
+        i = 0
+        while close:
+
+            i += 1
+            min_dist = 100
+
+            # check the distance from neighbors
+            for a in OH_neighbors: 
+                sq_dist = np.dot(atoms[a]['coords'] - OH['coords'],atoms[a]['coords'] - OH['coords'])
+                
+                if min_dist > np.sqrt(sq_dist): # save the smallest distance between neighbors
+                    min_dist = np.sqrt(sq_dist)
+
+                if min_dist < 2:
+                    close = True
+                else:
+                    close = False
+
+            if close: # if still close shift slightly in random direction
+                xyz[0] = random.choice([-1,0,1])
+                xyz[1] = random.choice([-1,0,1])
+                xyz[2] = random.choice([-1,0,1])
+                OH['coords'] = OH['coords'] + xyz*0.1
+            
+            elif args.verbose:
+                print('Placed OH atom %d after %d iterations' %(n_atoms+1, i))
+                break
+
+            else:
+                break
+
+            if i == 5000:
+                print('Could not place OH atom %d after %d iterations. Exiting...' %(n_atoms+1, i))
+                exit()
+
         n_atoms += 1
         atoms[str(n_atoms)] = OH
 
@@ -503,7 +594,6 @@ for bond in bonds:
             'delete' : False
         }
    
-
 #######################################################################################
 ######################## WRITE A NEW LAMMPS FILE WITH BROKEN BONDS ####################
 #######################################################################################
