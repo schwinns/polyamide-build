@@ -282,7 +282,7 @@ while abs(percent_prot - args.proton) > 0.01:
     OH = protonated[p]
     protonated.remove(OH)
     unprotonated.append(OH)
-    atoms[OH]['type'] = '0' # change type for charge assignments in next step
+    # atoms[OH]['type'] = '14' # change type for charge assignments in next step
 
     percent_prot = len(protonated) / (len(protonated) + len(unprotonated))
 
@@ -318,11 +318,14 @@ print('\t%.3f of the oxygens are protonated\n' %(len(protonated) / (len(protonat
 
 # Atoms section
 a = 0
+atom_ids = {} # atom_ids[old_id] = new_id
 for atom in atoms:
 
     if not atoms[atom]['delete']:
 
-        a_id = atom
+        a += 1
+        atom_ids[atom] = a
+        a_id = a
         mol_id = atoms[atom]['molecule']
         a_type = atoms[atom]['type']
         charge = atoms[atom]['charge']
@@ -332,7 +335,6 @@ for atom in atoms:
 
         new_line = '%s %s %s %s %f %f %f\n' %(a_id, mol_id, a_type, charge, x, y, z)
         out.write(new_line)
-        a += 1
 
 print('\t%s atoms' %(a))
 
@@ -348,7 +350,10 @@ for bond in bonds: # need to renumber bonds because some are deleted
         a1 = bonds[bond]['atoms'][0]
         a2 = bonds[bond]['atoms'][1]
 
-        new_line = '%d %s %s %s\n' %(b, b_type, a1, a2)
+        new_a1 = atom_ids[a1]
+        new_a2 = atom_ids[a2]
+
+        new_line = '%d %s %s %s\n' %(b, b_type, new_a1, new_a2)
         out.write(new_line)
 
 
@@ -367,7 +372,11 @@ for angle in angles: # need to renumber angles because some are deleted
         a2 = angles[angle]['atoms'][1]
         a3 = angles[angle]['atoms'][2]
 
-        new_line = '%d %s %s %s %s\n' %(ang, ang_type, a1, a2, a3)
+        new_a1 = atom_ids[a1]
+        new_a2 = atom_ids[a2]
+        new_a3 = atom_ids[a3]
+
+        new_line = '%d %s %s %s %s\n' %(ang, ang_type, new_a1, new_a2, new_a3)
         out.write(new_line)
 
 print('\t%d angles' %(ang))
@@ -386,7 +395,12 @@ for dihedral in dihedrals: # need to renumber dihedrals because some are deleted
         a3 = dihedrals[dihedral]['atoms'][2]
         a4 = dihedrals[dihedral]['atoms'][3]
 
-        new_line = '%d %s %s %s %s %s\n' %(dih, dih_type, a1, a2, a3, a4)
+        new_a1 = atom_ids[a1]
+        new_a2 = atom_ids[a2]
+        new_a3 = atom_ids[a3]
+        new_a4 = atom_ids[a4]
+
+        new_line = '%d %s %s %s %s %s\n' %(dih, dih_type, new_a1, new_a2, new_a3, new_a4)
         out.write(new_line)
 
 print('\t%d dihedrals' %(dih))

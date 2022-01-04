@@ -12,6 +12,7 @@ args = parser.parse_args()
 ######################################################################################
 # Get the charges using Gasteiger partial charges with GAFF in pysimm
 s = system.read_lammps(args.lmps)
+# s = system.read_lammps('protonated.lmps')
 f = forcefield.Gaff()
 s.forcefield = f.name
 
@@ -62,8 +63,8 @@ for line in f:
         mol_id = l[1]
         a_type = l[2]
 
-        if a_type == '0':
-            charge = '-1'
+        if a_type == '14':
+            charge = -1
         else:
             charge = charges[a_id]
         total_charge += charge
