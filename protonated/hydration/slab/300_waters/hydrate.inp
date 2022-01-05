@@ -3,13 +3,13 @@
 #
 
 # Every atom from diferent molecules will be far from each other at
-# least 2.0 Anstrons at the solution.
+# least 3.0 Anstrons at the solution.
 
-tolerance 2.0
+tolerance 3.0
 
 # CHANGING THE INITIAL RANDOM SEED
 
-seed 100000
+seed 10000
 
 # INCREASING NUMBER OF LOOPS PER MOLECULE 
 
@@ -26,25 +26,28 @@ filetype pdb
 
 # The output pdb file
 
-output hydrated.pdb
+output hydrated_initial.pdb
 
 # The first three numbers are the minimum x, y, z coordinates for this
 # molecules, the last three are maximum coordinates. The box defined
 
-# MONOMER -- TAKE CONVERGED STRUCTURE FROM slab.pdb
-structure slab.pdb (about 44 x 44 x 44 box)
+# PA slab
+# 11.246593 53.753407 xlo xhi
+# 11.246593 53.753407 ylo yhi
+# 6.96606 62.059614 zlo zhi
+structure post_proton.pdb 
   number 1
   fixed 0. 0. 0. 0. 0. 0.
 end structure
 
-# WATER BOTTOM LAYER (from (lo - 50 to lo in z)
-structure HOH.pdb 
-  number 1612
-  inside box 11.246593 11.246593 -38.753407 53.753407 53.753407 11.246593
+# WATER BOTTOM LAYER (30 Ang in z from 11.246593 to -18.753407)
+structure HOH.pdb
+  number 300
+  inside box 11.246593 11.246593 -18.753407 53.753407 53.753407 11.246593
 end structure
 
-# WATER TOP LAYER (from hi to hi + 50 in z)
-structure HOH.pdb 
-  number 1612
-  inside box 11.246593 11.246593 53.753407 53.753407 53.753407 103.753407
+# WATER TOP LAYER (53.753407 to 84.753407)
+structure HOH.pdb
+  number 300
+  inside box 11.246593 11.246593 53.753407 53.753407 53.753407 84.753407
 end structure

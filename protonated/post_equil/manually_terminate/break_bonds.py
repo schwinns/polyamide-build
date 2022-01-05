@@ -15,6 +15,8 @@ args = parser.parse_args()
 
 f = open(args.lmps, 'r')
 out = open(args.output, 'w')
+# f = open('final_pbc.lmps', 'r')
+# out = open('output.lmps', 'w')
 
 #######################################################################################
 ############################ INITIAL INFORMATION FROM HEADER ##########################
@@ -590,7 +592,7 @@ for bond in bonds:
         n_dihedrals += 1
         dihedrals[str(n_dihedrals)] = { # CA-CT-O-OH (imp)
             'type' : '21',
-            'atoms' : [CA_MPD[0],LC,O_TMC,str(n_atoms)],
+            'atoms' : [CA_TMC[0],LC,O_TMC,str(n_atoms)],
             'delete' : False
         }
    

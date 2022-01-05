@@ -13,10 +13,10 @@ parser.add_argument('-o','--output',default='output.lmps',
                     help='output lmps filename')
 args = parser.parse_args()
 
-# f = open(args.lmps, 'r')
-# out = open(args.output, 'w')
-f = open('post_equil.lmps','r')
-out = open('output.lmps', 'w')
+f = open(args.lmps, 'r')
+out = open(args.output, 'w')
+# f = open('post_equil.lmps','r')
+# out = open('output.lmps', 'w')
 
 #######################################################################################
 ############################ INITIAL INFORMATION FROM HEADER ##########################
@@ -165,10 +165,10 @@ for atom in atoms:
                 unprotonated.remove(atom)
                 protonated.append(atom)
         
-
-# print('%d oxygens are protonated' %(len(protonated)))
-# print('%d oxygens are unprotonated' %(len(unprotonated)))
-# print('%.3f of the oxygens are protonated' %(len(protonated) / (len(protonated) + len(unprotonated)) ))
+print('Before deprotonation:')
+print('\t%d oxygens are protonated' %(len(protonated)))
+print('\t%d oxygens are unprotonated' %(len(unprotonated)))
+print('\t%.3f of the oxygens are protonated' %(len(protonated) / (len(protonated) + len(unprotonated)) ))
 
 n_atoms = len(atoms)
 n_bonds = len(bonds)
@@ -244,6 +244,8 @@ for atom in unprotonated:
         'broken' : False,
         'delete' : False
     }
+    atoms[atom]['bonded'].append(str(n_atoms)) # need to add the new HO to the bonding info for OH
+    atoms[atom]['bonds'][str(n_bonds)] = str(n_atoms)
 
     # Add CT-OH-HO to angles
     n_angles += 1
@@ -271,20 +273,19 @@ for atom in unprotonated:
 ############################## DEPROTONATE CARBOXYL GROUPS ############################
 #######################################################################################
 
-print('Before deprotonation:')
-print('\t%d oxygens are protonated' %(len(protonated)))
-print('\t%d oxygens are unprotonated' %(len(unprotonated)))
-print('\t%.3f of the oxygens are protonated\n' %(len(protonated) / (len(protonated) + len(unprotonated)) ))
+unprotonated = []
+
+# print('\t%d oxygens are protonated' %(len(protonated)))
+# print('\t%d oxygens are unprotonated' %(len(unprotonated)))
+# print('\t%.3f of the oxygens are protonated\n' %(len(protonated) / (len(protonated) + len(unprotonated)) ))
 
 percent_prot = 1.0
-unprotonated = []
 while abs(percent_prot - args.proton) > 0.01:
 
     p = random.randint(0, len(protonated) - 1) # select a random oxygen to deprotonate
     OH = protonated[p]
     protonated.remove(OH)
     unprotonated.append(OH)
-    # atoms[OH]['type'] = '14' # change type for charge assignments in next step
 
     percent_prot = len(protonated) / (len(protonated) + len(unprotonated))
 
@@ -404,10 +405,5 @@ for dihedral in dihedrals: # need to renumber dihedrals because some are deleted
 
         new_line = '%d %s %s %s %s %s\n' %(dih, dih_type, new_a1, new_a2, new_a3, new_a4)
         out.write(new_line)
-        # if dihedral != str(dih):
-        if dih == 2747:
-            print('%s --> %s' %(dihedral, dih))
-            print('\t', dihedrals[dihedral])
-            # exit()
 
 print('\t%d dihedrals' %(dih))

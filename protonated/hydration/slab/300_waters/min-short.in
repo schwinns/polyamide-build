@@ -18,7 +18,7 @@ pair_modify     mix arithmetic
 kspace_style    pppm 1e-8
 
 # Data file input
-read_data        charged.lmps
+read_data        hydrated_initial.lmps
 
 # Coefficients
 pair_coeff 1 1 0.0860000 3.3996695 # CA
@@ -35,6 +35,9 @@ pair_coeff 11 11 0.1700000 3.2499985 # LN
 pair_coeff 12 12 0.0860000 3.3996695 # CT
 pair_coeff 13 13 0.0157000 1.0690785 # H
 pair_coeff 14 14 0.2104000 3.0664734 # OR
+pair_coeff 15 15 0.1020000 3.1880000 # OW
+pair_coeff 16 16 0.0000000 0.0000000 # HW
+pair_coeff 15 16 0.0000000 0.0000000 # OW-HW
 
 bond_coeff 1  harmonic    4.61100000e+02    1.39840000e+00 # CA-CA
 bond_coeff 2  harmonic    3.45900000e+02    1.49060000e+00 # CA-C
@@ -54,6 +57,7 @@ bond_coeff 15 harmonic    3.71400000e+02    9.73000000e-01 # OH-HO
 bond_coeff 16 harmonic    3.45900000e+02    1.49060000e+00 # CA-CT
 bond_coeff 17 harmonic    6.37700000e+02    1.21830000e+00 # CT-O
 bond_coeff 18 harmonic    3.71400000e+02    9.73000000e-01 # OR-HO
+bond_coeff 19 harmonic    4.50000000e+02    9.57200000e-01 # OW-HW
 
 angle_coeff 1  harmonic    6.66000000e+01    1.20020052e+02 # CA-CA-CA
 angle_coeff 2  harmonic    4.82000000e+01    1.19880051e+02 # CA-CA-HA
@@ -78,6 +82,7 @@ angle_coeff 20 harmonic    4.99000000e+01    1.06550046e+02 # CT-OH-HO
 angle_coeff 21 harmonic    7.59000000e+01    1.22100052e+02 # O-CT-OH
 angle_coeff 22 harmonic    6.87000000e+01    1.22600053e+02 # CA-CT-O
 angle_coeff 23 harmonic    6.43000000e+01    1.20330052e+02 # CA-CA-CT
+angle_coeff 24 harmonic    5.50000000e+01    1.04520000e+02 # HW-OW-HW
 
 dihedral_coeff 1  charmm    3.62500000e+00         2       180         0 # CA-CA-CA-CA
 dihedral_coeff 2  charmm    1.10000000e+00         2       180         0 # CA-CA-CA-HA (improper)
@@ -135,10 +140,12 @@ thermo           100
 
 # Minimization Step
 min_style        sd
-minimize         1.0e-4 1.0e-4 5000 100000
+minimize         0.0 1.0e-4 500 10000
+write_data      min_short.lmps
+
 min_style        cg
 min_modify       line quadratic
-minimize         1.0e-5 1.0e-5 5000 100000
+minimize         0.0 1.0e-5 500 10000
 
 # Data file output
-write_data       min.lmps
+write_data       min_short.lmps

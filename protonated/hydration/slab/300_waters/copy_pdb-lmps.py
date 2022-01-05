@@ -187,7 +187,7 @@ for mol in waters:
     for a in range(2):
 
         n_bonds += 1
-        new_line = "%d %d %s %s\n" %(n_bonds, 19, OW, waters[mol][a+1])
+        new_line = " %d %d %s %s\n" %(n_bonds, 19, OW, waters[mol][a+1])
         out.write(new_line)
 
 out.write('\nAngles\n\n')
@@ -207,7 +207,7 @@ for line in lmp:
 for mol in waters:
 
     n_angles += 1
-    new_line = "%d %d %s %s %s\n" %(n_angles, 24, waters[mol][0], waters[mol][1], waters[mol][2])
+    new_line = " %d %d %s %s %s\n" %(n_angles, 24, waters[mol][0], waters[mol][1], waters[mol][2])
     out.write(new_line)
 
 out.write('\nDihedrals\n')
