@@ -1,0 +1,30 @@
+name: py2
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - ca-certificates=2021.5.30=h033912b_0
+  - certifi=2019.11.28=py27h8c360ce_1
+  - libblas=3.9.0=8_openblas
+  - libcblas=3.9.0=8_openblas
+  - libcxx=11.1.0=habf9029_0
+  - libffi=3.2.1=hb1e8313_1007
+  - libgfortran=4.0.0=7_5_0_h1a10cd1_22
+  - libgfortran4=7.5.0=h1a10cd1_22
+  - liblapack=3.9.0=8_openblas
+  - libopenblas=0.3.12=openmp_h63d9170_1
+  - llvm-openmp=11.1.0=hda6cdc1_1
+  - ncurses=6.2=h2e338ed_4
+  - numpy=1.15.4=py27hbb3c62a_1002
+  - openssl=1.1.1k=h0d85af4_0
+  - pip=20.1.1=pyh9f0ad1d_0
+  - python=2.7.15=h8e446fc_1011_cpython
+  - python_abi=2.7=1_cp27m
+  - readline=8.1=h05e3726_0
+  - scipy=1.2.1=py27h7e0e109_2
+  - setuptools=44.0.0=py27_0
+  - sqlite=3.35.5=h44b9ce1_0
+  - tk=8.6.10=h0419947_1
+  - wheel=0.36.2=pyhd3deb0d_0
+  - zlib=1.2.11=h7795811_1010
+prefix: /Users/nate_schwindt/anaconda3/envs/py2
