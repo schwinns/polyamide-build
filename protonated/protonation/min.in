@@ -18,7 +18,7 @@ pair_modify     mix arithmetic
 kspace_style    pppm 1e-8
 
 # Data file input
-read_data        data.lmps
+read_data        charged.lmps
 
 # Coefficients
 pair_coeff 1 1 0.0860000 3.3996695 # CA

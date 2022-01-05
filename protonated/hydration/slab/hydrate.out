@@ -20,7 +20,7 @@
   Reading coordinate file: HOH.pdb
   Number of independent structures:            3
   The structures are: 
-  Structure            1 :post_proton.pdb(        6785  atoms)
+  Structure            1 :post_proton.pdb(        6784  atoms)
   Structure            2 :HOH.pdb(           3  atoms)
   Structure            3 :HOH.pdb(           3  atoms)
   Maximum number of GENCAN loops for all molecule packing:          200
@@ -39,13 +39,13 @@
   Number of molecules of type            1 :            1
   Number of molecules of type            2 :          500
   Number of molecules of type            3 :          500
-  Total number of atoms:         9785
+  Total number of atoms:         9784
   Molecule post_proton.pdb(           1 ) will be fixed.
   Total number of molecules:         1001
   Number of fixed molecules:            1
   Number of free molecules:         1000
   Number of variables:         6000
-  Total number of fixed atoms:         6785
+  Total number of fixed atoms:         6784
   Maximum internal distance of type            1 :    1.9059249722903573     
   Maximum internal distance of type            2 :    1.9059249722903573     
   All atoms must be within these coordinates: 
@@ -103,8 +103,8 @@
   Adjusting random positions to fit the constraints. 
   Packing:|0                                                             100%|
           |*******
-  Restraint-only function value:    0.0000000000000000     
-  Maximum violation of the restraints:    0.0000000000000000     
+  Restraint-only function value:    2.8705125872565758E-008
+  Maximum violation of the restraints:    2.8705125872565758E-008
 
 --------------------------------------------------------------------------------
 
@@ -112,12 +112,12 @@
   Adjusting random positions to fit the constraints. 
   Packing:|0                                                             100%|
           |
-  Restraint-only function value:    2.2128591095881608E-004
-  Maximum violation of the restraints:    1.8088519172632640E-004
+  Restraint-only function value:    4.6569698327451049E-005
+  Maximum violation of the restraints:    4.6569698327451049E-005
 
 ################################################################################
 
-  Objective function at initial point:    107487.07187066010     
+  Objective function at initial point:    107879.13271575674     
 
 ################################################################################
 
@@ -135,37 +135,19 @@
           |******************************************************************|
           |******************************************************************|
 
-  Function value from last GENCAN loop: f = .14543E+00
-  Best function value before: f = .50176E+05
+
+  Function value from last GENCAN loop: f = .76151E-02
+  Best function value before: f = .50223E+05
   Improvement from best function value:    99.99 %
   Improvement from last loop:    99.99 %
   Maximum violation of target distance:     0.000000
-  Maximum violation of the constraints: .85114E-01
-  All-type function value: .57312E+05
-
---------------------------------------------------------------------------------
-
-
---------------------------------------------------------------------------------
-
-  Starting GENCAN loop:            1
-  Scaling radii by:    1.1000000000000001     
-
-  Packing:|0                                                             100%|
-          |*************************************************
-
-  Function value from last GENCAN loop: f = .14658E-05
-  Best function value before: f = .14543E+00
-  Improvement from best function value:    99.99 %
-  Improvement from last loop:    99.99 %
-  Maximum violation of target distance:     0.000000
-  Maximum violation of the constraints: .12505E-05
+  Maximum violation of the constraints: .16550E-02
   Current structure written to file: hydrated_initial.pdb
 --------------------------------------------------------------------------------
   Packing solved for molecules of type           2
-  Objective function value:    1.4657576665483454E-006
+  Objective function value:    7.6150574526921725E-003
   Maximum violation of target distance:    0.0000000000000000     
-  Max. constraint violation:    1.2505174381855386E-006
+  Max. constraint violation:    1.6550251857068831E-003
 --------------------------------------------------------------------------------
 
 ################################################################################
@@ -184,13 +166,13 @@
           |******************************************************************|
           |******************************************************************|
 
-  Function value from last GENCAN loop: f = .62520E+00
-  Best function value before: f = .57312E+05
+  Function value from last GENCAN loop: f = .33747E+00
+  Best function value before: f = .57656E+05
   Improvement from best function value:    99.99 %
   Improvement from last loop:    99.99 %
   Maximum violation of target distance:     0.000000
-  Maximum violation of the constraints: .77148E-01
-  All-type function value: .62520E+00
+  Maximum violation of the constraints: .55510E-01
+  All-type function value: .34508E+00
 
 --------------------------------------------------------------------------------
 
@@ -201,20 +183,21 @@
   Scaling radii by:    1.1000000000000001     
 
   Packing:|0                                                             100%|
-          |********************************************************
+          |******************************************************************|
+          |*********************
 
-  Function value from last GENCAN loop: f = .19566E-01
-  Best function value before: f = .62520E+00
-  Improvement from best function value:    96.87 %
-  Improvement from last loop:    96.87 %
+  Function value from last GENCAN loop: f = .92569E-02
+  Best function value before: f = .33747E+00
+  Improvement from best function value:    97.26 %
+  Improvement from last loop:    97.26 %
   Maximum violation of target distance:     0.000000
-  Maximum violation of the constraints: .83434E-02
+  Maximum violation of the constraints: .27364E-02
   Current structure written to file: hydrated_initial.pdb
 --------------------------------------------------------------------------------
   Packing solved for molecules of type           3
-  Objective function value:    1.9566199837169840E-002
+  Objective function value:    9.2569082265352431E-003
   Maximum violation of target distance:    0.0000000000000000     
-  Max. constraint violation:    8.3433765703795019E-003
+  Max. constraint violation:    2.7364245239383336E-003
 --------------------------------------------------------------------------------
 
 ################################################################################
@@ -231,9 +214,9 @@
 ################################################################################
 
                                  Success! 
-              Final objective function value: .31249E+00
+              Final objective function value: .17731E+01
               Maximum violation of target distance:   0.000000
-              Maximum violation of the constraints: .83434E-02
+              Maximum violation of the constraints: .27364E-02
 
 --------------------------------------------------------------------------------
 
@@ -246,7 +229,7 @@
 
 ################################################################################
 
-   Running time:   0.852623999      seconds. 
+   Running time:   0.832890987      seconds. 
 
 --------------------------------------------------------------------------------
 

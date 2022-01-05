@@ -13,8 +13,10 @@ parser.add_argument('-o','--output',default='output.lmps',
                     help='output lmps filename')
 args = parser.parse_args()
 
-f = open(args.lmps, 'r')
-out = open(args.output, 'w')
+# f = open(args.lmps, 'r')
+# out = open(args.output, 'w')
+f = open('post_equil.lmps','r')
+out = open('output.lmps', 'w')
 
 #######################################################################################
 ############################ INITIAL INFORMATION FROM HEADER ##########################
@@ -402,5 +404,10 @@ for dihedral in dihedrals: # need to renumber dihedrals because some are deleted
 
         new_line = '%d %s %s %s %s %s\n' %(dih, dih_type, new_a1, new_a2, new_a3, new_a4)
         out.write(new_line)
+        # if dihedral != str(dih):
+        if dih == 2747:
+            print('%s --> %s' %(dihedral, dih))
+            print('\t', dihedrals[dihedral])
+            # exit()
 
 print('\t%d dihedrals' %(dih))
