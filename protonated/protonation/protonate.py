@@ -13,6 +13,69 @@ parser.add_argument('-o','--output',default='output.lmps',
                     help='output lmps filename')
 args = parser.parse_args()
 
+def check_N(N, atoms_top):
+
+    # input the atom id for an N to check the other N
+    #   if the other N is type NH, then MPD-T
+    #   if the other N is type LN, then MPD-L
+
+    # Positions on MPD ring
+    #       _1_
+    #     4    2
+    #     |    |
+    # N - 5_  _3 - N
+    #       6
+
+    n_NH = 0
+    if atoms_top[C]['type'] == '8':
+        n_NH += 1
+
+    # check the other N on MPD to determine MPD-L/MPD-T    
+    for a0 in atoms_top[N]['bonded']: 
+        if atoms_top[a0]['type'] == '1': # 3/5 position
+            for a1 in atoms_top[a0]['bonded']:
+                if atoms_top[a1]['type'] == '1': # 2/4 and 6 positions
+                    for a2 in atoms_top[a1]['bonded']:
+                        if atoms_top[a2]['type'] == '1': # 1 and 3/5 positions
+                            for a3 in atoms_top[a2]['bonded']:
+                                if atoms[a3]['type'] == '8':
+                                    n_NH += 1
+    
+    return n_NH
+
+def check_C(C, atoms_top):
+
+    # input the atom id for a C to check the other Cs
+    #   if n_CT = 0, then TMC-C
+    #   if n_CT = 1, then TMC-L
+    #   if n_CT = 2, then TMC-T
+
+    # Positions on TMC ring
+    #        C(14)
+    #        |
+    #       _1_
+    #     4    2
+    #     |    |
+    # C - 5_  _3 - C
+    #       6
+
+    n_CT = 0
+    if atoms_top[C]['type'] == '12':
+        n_CT += 1
+    
+    for a in atoms_top[C]['bonded']: 
+        if atoms_top[a]['type'] == '1': # find CA bonded to C (pos. 14) --> CA is position 1
+            for a0 in atoms_top[a]['bonded']:
+                if atoms_top[a0]['type'] == '1': # check CAs in 2/4
+                    for a1 in atoms_top[a0]['bonded']:
+                        if atoms_top[a1]['type'] == '1' and not a1 == a: # check CA in 3/5 but not 1
+                            for a2 in atoms_top[a1]['bonded']:
+                                if atoms_top[a2]['type'] == '12': # find carboxyl bonded to CA in 3/5
+                                    n_CT += 1
+
+    return n_CT
+
+
 f = open(args.lmps, 'r')
 out = open(args.output, 'w')
 # f = open('post_equil.lmps','r')
@@ -312,6 +375,33 @@ print('\t%d oxygens are protonated' %(len(protonated)))
 print('\t%d oxygens are unprotonated' %(len(unprotonated)))
 print('\t%.3f of the oxygens are protonated\n' %(len(protonated) / (len(protonated) + len(unprotonated)) ))
 
+#######################################################################################
+########################### DELETE ANY UNCROSSLINKED OLIGOMERS ########################
+#######################################################################################
+
+for atom in atoms:
+
+    if atoms[atom]['type'] == '12': # check if all three C's are terminated in TMC
+
+        n_CT = check_C(atom, atoms_top=atoms)
+        if n_CT == 3:
+            atoms[atom]['delete'] = True
+            for a in atoms[atom]['bonded']:
+                atoms[a]['delete'] = True
+                for a0 in atoms[a]['bonded']:
+                    atoms[a0]['delete'] = True
+
+    elif atoms[atom]['type'] == '8': # check is both N's are terminated in MPD
+
+        n_NH = check_N(atom, atoms_top=atoms)
+        if n_NH == 2:
+            atoms[atom]['delete'] = True
+            for a in atoms[atom]['bonded']:
+                atoms[a]['delete'] = True
+                for a0 in atoms[a]['bonded']:
+                    atoms[a0]['delete'] = True
+                    for a1 in atoms[a0]['bonded']
+                        atoms[a1]['delete'] = True
 
 #######################################################################################
 #################### WRITE A NEW LAMMPS FILE WITH CORRECT PROTONATION #################

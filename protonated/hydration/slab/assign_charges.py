@@ -1,5 +1,6 @@
 
 import argparse
+import numpy as np
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-l','--lmps',
@@ -8,7 +9,7 @@ parser.add_argument('-o','--output',default='output.lmps',
                     help='output lmps filename')
 args = parser.parse_args()
 
-def check_N(N, atoms_top=atoms):
+def check_N(N, atoms_top):
 
     # input the atom id for an N to check the other N
     #   if the other N is type NH, then MPD-T
@@ -21,7 +22,11 @@ def check_N(N, atoms_top=atoms):
     # N - 5_  _3 - N
     #       6
 
-    # check the other N on MPD to determine MPD-L/MPD-T
+    n_NH = 0
+    if atoms_top[C]['type'] == '8':
+        n_NH += 1
+
+    # check the other N on MPD to determine MPD-L/MPD-T    
     for a0 in atoms_top[N]['bonded']: 
         if atoms_top[a0]['type'] == '1': # 3/5 position
             for a1 in atoms_top[a0]['bonded']:
@@ -29,32 +34,103 @@ def check_N(N, atoms_top=atoms):
                     for a2 in atoms_top[a1]['bonded']:
                         if atoms_top[a2]['type'] == '1': # 1 and 3/5 positions
                             for a3 in atoms_top[a2]['bonded']:
-                                if atoms[a3]['type'] == '8': # MPD-T
-                                    return 'MPD-T'
-                                elif atoms[a3]['type'] == '11': # MPD-L
-                                    return 'MPD-L'
+                                if atoms[a3]['type'] == '8':
+                                    n_NH += 1
+    
+    return n_NH
 
-f = open(args.lmps, 'r')
-out = open(args.output, 'w')
+def check_C(C, atoms_top):
 
-#######################################################################################
-############################ INITIAL INFORMATION FROM HEADER ##########################
-#######################################################################################
+    # input the atom id for a C to check the other Cs
+    #   if n_CT = 0, then TMC-C
+    #   if n_CT = 1, then TMC-L
+    #   if n_CT = 2, then TMC-T
 
-# Write everything before atoms
-for line in f:
+    # Positions on TMC ring
+    #        C(14)
+    #        |
+    #       _1_
+    #     4    2
+    #     |    |
+    # C - 5_  _3 - C
+    #       6
 
-    if line.startswith('Atoms'):
-        out.write(line)
-        out.write('\n')
-        break
+    n_CT = 0
+    if atoms_top[C]['type'] == '12':
+        n_CT += 1
+    
+    for a in atoms_top[C]['bonded']: 
+        if atoms_top[a]['type'] == '1': # find CA bonded to C (pos. 14) --> CA is position 1
+            for a0 in atoms_top[a]['bonded']:
+                if atoms_top[a0]['type'] == '1': # check CAs in 2/4
+                    for a1 in atoms_top[a0]['bonded']:
+                        if atoms_top[a1]['type'] == '1' and not a1 == a: # check CA in 3/5 but not 1
+                            for a2 in atoms_top[a1]['bonded']:
+                                if atoms_top[a2]['type'] == '12': # find carboxyl bonded to CA in 3/5
+                                    n_CT += 1
 
+    return n_CT
+
+def find_N(atom, atoms_top):
+
+    # input an atom id and find nearest N
+    Ns = ['8','11']
+
+    if atoms_top[atom]['type'] in Ns:
+        return atom
     else:
-        out.write(line)
+        for a in atoms_top[atom]['bonded']: # check atoms bonded to atom
+            if atoms_top[a]['type'] in Ns:
+                return a
+
+        for a in atoms_top[atom]['bonded']: # check atoms bonded to a level
+            for a0 in atoms_top[a]['bonded']:
+                if atoms_top[a0]['type'] in Ns:
+                    return a0
+
+        for a in atoms_top[atom]['bonded']: # check atoms bonded to a0 level
+            for a0 in atoms_top[a]['bonded']:
+                for a1 in atoms_top[a0]['bonded']:
+                    if atoms_top[a1]['type'] in Ns:
+                        return a1
+
+
+def find_C(atom, atoms_top):
+
+    # input an atom id and find nearest C
+    Cs = ['10','12']
+
+    if atoms_top[atom]['type'] in Cs:
+        return atom
+    else:
+        for a in atoms_top[atom]['bonded']: # check atoms bonded to atom
+            if atoms_top[a]['type'] in Cs:
+                return a
+
+        for a in atoms_top[atom]['bonded']: # check atoms bonded to a level
+            for a0 in atoms_top[a]['bonded']:
+                if atoms_top[a0]['type'] in Cs:
+                    return a0
+
+        for a in atoms_top[atom]['bonded']: # check atoms bonded to a0 level
+            for a0 in atoms_top[a]['bonded']:
+                for a1 in atoms_top[a0]['bonded']:
+                    if atoms_top[a1]['type'] in Cs:
+                        return a1
 
 #######################################################################################
 ######################### CREATE DICTIONARIES WITH FULL TOPOLOGY ######################
 #######################################################################################
+
+# f = open(args.lmps, 'r')
+f = open('hydrated_initial.lmps', 'r')
+# f = open('1MPD-1TMC.lmps', 'r')
+
+# Skip everything before atoms
+for line in f:
+
+    if line.startswith('Atoms'): # skip to atoms section
+        break
 
 # Create dictionaries with full topology
 atoms = {}
@@ -85,8 +161,7 @@ for line in f: # build dictionary of all atoms
             'charge' : charge,
             'coords' : np.array([x,y,z]),
             'bonded' : [],
-            'bonds' : {},
-            'monomer' : None
+            'bonds' : {}
         }
 
 # skip velocities
@@ -161,18 +236,23 @@ for line in f: # build dihedrals dictionary
             'atoms' : [a1,a2,a3,a4]
         }
 
+
+f.close()
+
 #######################################################################################
 ############################### ASSIGN PROPER CHARGES #################################
 #######################################################################################
 
-# MPDs = {} # MPDs[MPD number][atom id] = charge
-# m = 0
 charges = {}
 for atom in atoms:
 
     if atoms[atom]['type'] == '11': # LN
 
-        charges[atom] = -0.4025
+        mono_type = check_N(atom, atoms_top=atoms)
+        if mono_type == 'MPD-T':
+            charges[atom] = -0.421
+        elif mono_type == 'MPD-L':
+            charges[atom] = -0.4025
     
     elif atoms[atom]['type'] == '6': # HN
 
@@ -182,11 +262,73 @@ for atom in atoms:
             elif atoms[a]['type'] == '11': # HN on LN in MPD-L
 
                 # determine MPD-L/MPD-T
-                mono_type = check_N(a, atoms)
-                if mono_type == 'MPD-T':
+                n_NH = check_N(a, atoms_top=atoms)
+                if n_NH == 1: # MPD-T
                     charges[atom] = 0.3577
-                elif mono_type == 'MPD_L':
+                elif n_NH == 0: # MPD-L
                     charges[atom] = 0.3503
+
+    elif atoms[atom]['type'] == '8': # NH
+        
+        charges[atom] = -0.9254
+
+    elif atoms[atom]['type'] == '12': # CT
+
+        n_CT = check_C(atom, atoms_top=atoms)
+        if n_CT == 1:
+            charges[atom] = 0.7387
+        elif n_CT == 2:
+            charges[atom] = 0.7369
+
+    elif atoms[atom]['type'] == '10': # LC
+
+        n_CT = check_C(atom, atoms_top=atoms)
+        if n_CT == 0:
+            charges[atom] = 0.50285
+        elif n_CT == 1:
+            charges[atom] = 0.5566
+        elif n_CT == 2:
+            charges[atom] = 0.5083
+
+    elif atoms[atom]['type'] == '4': # O
+
+        C = find_C(atom, atoms_top=atoms)
+        n_CT = check_C(C, atoms_top=atoms)
+        if n_CT == 0:
+            charges[atom] = -0.46753
+        elif n_CT == 1:
+            
+            if atoms[C]['type'] == '12': # if the C bonded to O is a CT
+                charges[atom] = -0.5853
+            else:
+                charges[atom] = -0.5126
+
+        elif n_CT == 2:
+
+            if atoms[C]['type'] == '12': # if the C bonded to O is a CT
+                charges[atom] = -0.5758
+            else:
+                charges[atom] = -0.4748
+
+    ####### THIS ONE WILL CHANGE WHEN ACCOUNTING FOR DEPROTONATION ######
+    elif atoms[atom]['type'] == '7': # OH
+
+        C = find_C(atom, atoms_top=atoms)
+        n_CT = check_C(C, atoms_top=atoms)
+        if n_CT == 1:
+            charges[atom] = -0.6148
+        elif n_CT == 2:
+            charges[atom] = -0.6373
+    #####################################################################
+
+    elif atoms[atom]['type'] == '9': # HO
+
+        C = find_C(atom, atoms_top=atoms)
+        n_CT = check_C(C, atoms_top=atoms)
+        if n_CT == 1:
+            charges[atom] = 0.4463
+        elif n_CT == 2:
+            charges[atom] = 0.4551
 
     elif atoms[atom]['type'] == '1': # CA
 
@@ -203,64 +345,139 @@ for atom in atoms:
             charges[atom] = 0.5496
 
         elif '11' in bonded_types: # CA bonded to LN
-            mono_type = check_N(bonded_types['11'][0],atoms)
-            if mono_type == 'MPD-T':
+            N = bonded_types['11'][0]
+
+            n_NH = check_N(N, atoms_top=atoms)
+            if n_NH == 1:
                 charges[atom] = 0.3883
-            elif mono_type == 'MPD-L':
+            elif n_NH == 0:
                 charges[atom] = -0.2175
 
-        elif 
+        elif '10' in bonded_types: # CA bonded to LC
+            C = find_C(atom, atoms_top=atoms)
+            n_CT = check_C(C, atoms_top=atoms)
+            if n_CT == 0:
+                charges[atom] = -0.10058
+            elif n_CT == 1:
+                charges[atom] = -0.082
+            elif n_CT == 2:
+                charges[atom] = -0.0843
 
-        # m += 1
-        # MPDs[m] = {atom : -0.4025} # add LN atom to MPD monomer
+        elif '12' in bonded_types: # CA bonded to CT
+            C = find_C(atom, atoms_top=atoms)
+            n_CT = check_C(C, atoms_top=atoms)
+            if n_CT == 1:
+                charges[atom] = -0.0713
+            elif n_CT == 2:
+                charges[atom] = -0.0399
 
-        # CAs = []
-        # HAs = {} # HAs[CA] = HA bonded to that CA
-        # for a0 in atoms[atom]['bonded']: # add CA and HN bonded to LN
-        #     if atoms[a0]['type'] == '1':
-        #         CAs.append(a0)
-        #         MPDs[m] = {a0 : -0.2175}
-        #     elif atoms[a0]['type'] == '6':
-        #         HN1 = a0
-        #         MPDs[m] = {a0 : 0.3503}
+        elif '2' in bonded_types: # CA bonded to HA (CA, CA are other 2 bonds)
+           
+            bonded_types_next = {} # bonded_types_next[0 or 1] = [types of bonded atoms]
+            i = 0
+            for a in atoms[atom]['bonded']:
+                if atoms[a]['type'] == '1': # check the types of the CAs on either side
+                    bonded_types_next[i] = []
+                    for a0 in atoms[a]['bonded']:
+                        bonded_types_next[i].append(atoms[a0]['type'])
+                    i += 1
 
-        # for a1 in atoms[CAs[0]]['bonded']: 
-        #     CAs.append(a1)
+            # Check the types of the atoms bonded to atom to determine charges
+            #### MPD CAs ####
+            if '2' in bonded_types_next[0] and '2' in bonded_types_next[1]: # MPD CA in 1 position
+                N = find_N(atom, atoms_top=atoms)
+                N_type = atoms[N]['type']
+                if N_type == '8': # MPD-T
+                    charges[atom] = 0.1293
+                elif N_type == '11':
+                    n_NH = check_N(N, atoms_top=atoms)
+                    if n_NH == 0: # MPD-L
+                        charges[atom] = -0.2418
+                    elif n_NH == 1: # MPD-T
+                        charges[atom] = 0.1293
 
-        # for a2 in atoms[CAs[1]]['bonded']: # one of two CAs bonded to CAs[0]
-        #     if atoms[a2]['type'] == '2':
-        #         HAs[CAs[1]] = a2
-        #     elif atoms[a2]['type'] == '1':
-        #         CAs.append(a2)
+            elif '11' in bonded_types_next[0] and '11' in bonded_types_next[1]: # MPD-L CA in 6 position
+                charges[atom] = 0.1082
 
-        # for a2 in atoms[CAs[2]]['bonded']: # the other CA bonded to CAs[0]
-        #     if atoms[a2]['type'] == '2':
-        #         HAs[CAs[2]] = a2
-        #     elif atoms[a2]['type'] == '1':
-        #         CAs.append(a2)
+            elif '8' in bonded_types_next[0] and '11' in bonded_types_next[1]: # MPD-T CA in 6 position
+                charges[atom] = -0.3154
 
-        # for a2 in atoms[CAs[3]]['bonded']: # other CA bonded to CAs[1]
-        #     if atoms[a2]['type'] == '2':
-        #         HAs[CAs[1]] = a2
-        #     elif atoms[a2]['type'] == '1':
-        #         CAs.append(a2)
+            elif '2' in bonded_types_next[0] and '11' in bonded_types_next[1]: # MPD CA in 2/4 position
+                N = find_N(atom, atoms_top=atoms)
+                N_type = atoms[N]['type']
+                if N_type == '8': # MPD-T
+                    charges[atom] = -0.2315
+                elif N_type == '11':
+                    mono_type = check_N(N, atoms_top=atoms)
+                    if mono_type == 'MPD-L': # MPD-L
+                        charges[atom] = 0.3365
+                    elif mono_type == 'MPD-T': # MPD-T
+                        charges[atom] = -0.2315
+
+            elif '2' in bonded_types_next[1] and '11' in bonded_types_next[0]: # MPD CA in 2/4 position
+                N = find_N(atom, atoms_top=atoms)
+                N_type = atoms[N]['type']
+                if N_type == '8': # MPD-T
+                    charges[atom] = -0.2315
+                elif N_type == '11':
+                    n_NH = check_N(N, atoms_top=atoms)
+                    if n_NH == 0: # MPD-L
+                        charges[atom] = 0.3365
+                    elif n_NH == 1: # MPD-T
+                        charges[atom] = -0.2315
+
+            elif '2' in bonded_types_next[0] and '8' in bonded_types_next[1]: # MPD-T CA in 2 position by NH
+                charges[atom] = -0.2772
+
+            elif '2' in bonded_types_next[1] and '8' in bonded_types_next[0]: # MPD-T CA in 2 position by NH
+                charges[atom] = -0.2772
+
+            #### TMC CAs ####
+            elif '10' in bonded_types_next[0] and '10' in bonded_types_next[1]: # TMC CA between two CAs bonded to LCs
+                C = find_C(atom, atoms_top=atoms)
+                n_CT = check_C(C, atoms_top=atoms)
+                if n_CT == 0:
+                    charges[atom] = 0.06526
+                elif n_CT == 1:
+                    charges[atom] = 0.0423
+
+            elif '12' in bonded_types_next[0] and '12' in bonded_types_next[1]: # TMC-T CA between two CAs bonded to CTs
+                charges[atom] = 0.0344
+
+            elif '10' in bonded_types_next[0] and '12' in bonded_types_next[1]: # TMC CA between CA bonded to LC and CA bonded to CT
+                C = find_C(atom, atoms_top=atoms)
+                n_CT = check_C(C, atoms_top=atoms)
+                if n_CT == 1:
+                    charges[atom] = 0.06005
+                elif n_CT == 2:
+                    charges[atom] = 0.0692
+
+            elif '10' in bonded_types_next[1] and '12' in bonded_types_next[0]: # TMC CA between CA bonded to LC and CA bonded to CT
+                C = find_C(atom, atoms_top=atoms)
+                n_CT = check_C(C, atoms_top=atoms)
+                if n_CT == 1:
+                    charges[atom] = 0.06005
+                elif n_CT == 2:
+                    charges[atom] = 0.0692
+                
 
 #######################################################################################
 ###################### WRITE A NEW LAMMPS FILE WITH CORRECT CHARGES ###################
 #######################################################################################
-# Write a new file with corrected charges
-f = open(args.lmps,'r')
-out = open(args.output, 'w')
 
+exit()
 total_charge = 0
+f = open(args.lmps, 'r')
+out = open(args.output, 'w')
 # Write Header and Coeffs
 for line in f:
 
-    if line.startswith('Atoms'): # go to Atoms section
+    if line.startswith('Atoms'):
         out.write(line)
+        out.write('\n')
         break
 
-    else: # everything before atoms
+    else:
         out.write(line)
 
 # Atoms section
@@ -283,7 +500,10 @@ for line in f:
         mol_id = l[1]
         a_type = l[2]
 
-        charge = charges[a_id]
+        if a_type == '2':
+            charge = 0.0
+        else:
+            charge = charges[a_id]
         total_charge += charge
         
         x = l[4]
