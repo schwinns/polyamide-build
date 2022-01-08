@@ -1,0 +1,146 @@
+# Energy minimization script with class2 ff for simulated polymerization
+
+# System
+units            real
+atom_style       full
+dimension        3
+newton           on
+boundary         p p p
+
+# Styles
+bond_style      hybrid harmonic
+angle_style     hybrid harmonic
+dihedral_style  hybrid charmm multi/harmonic
+special_bonds   lj 0.0 0.0 0.5 coul 0.0 0.0 0.83333333
+pair_style      lj/cut/coul/long 10.0 12.0
+pair_modify     tail yes
+pair_modify     mix arithmetic
+kspace_style    pppm 1e-8
+
+# Data file input
+read_data       post_proton_charged.lmps
+
+# Coefficients
+pair_coeff 1 1 0.0860000 3.3996695 # CA
+pair_coeff 2 2 0.0150000 2.5996425 # HA
+pair_coeff 3 3 0.0860000 3.3996695 # C
+pair_coeff 4 4 0.2100000 2.9599219 # O
+pair_coeff 5 5 0.1700000 3.2499985 # N
+pair_coeff 6 6 0.0157000 1.0690785 # HN
+pair_coeff 7 7 0.2104000 3.0664734 # OH
+pair_coeff 8 8 0.1700000 3.2499985 # NH
+pair_coeff 9 9 0.0000000 0.0000000 # HO
+pair_coeff 10 10 0.0860000 3.3996695 # LC
+pair_coeff 11 11 0.1700000 3.2499985 # LN
+pair_coeff 12 12 0.0860000 3.3996695 # CT
+pair_coeff 13 13 0.0157000 1.0690785 # H
+pair_coeff 14 14 0.2104000 3.0664734 # OR
+
+bond_coeff 1  harmonic    4.61100000e+02    1.39840000e+00 # CA-CA
+bond_coeff 2  harmonic    3.45900000e+02    1.49060000e+00 # CA-C
+bond_coeff 3  harmonic    3.45800000e+02    1.08600000e+00 # CA-HA
+bond_coeff 4  harmonic    6.37700000e+02    1.21830000e+00 # C-O
+bond_coeff 5  harmonic    4.27600000e+02    1.37890000e+00 # LC-LN
+bond_coeff 6  harmonic    3.84200000e+02    1.41210000e+00 # N-CA
+bond_coeff 7  harmonic    4.03200000e+02    1.01290000e+00 # N-HN
+bond_coeff 8  harmonic    4.17900000e+02    1.38590000e+00 # CA-NH
+bond_coeff 9  harmonic    4.04600000e+02    1.01210000e+00 # NH-HN 
+bond_coeff 10 harmonic    3.45900000e+02    1.49060000e+00 # CA-LC
+bond_coeff 11 harmonic    6.37700000e+02    1.21830000e+00 # LC-O
+bond_coeff 12 harmonic    3.84200000e+02    1.41210000e+00 # LN-CA
+bond_coeff 13 harmonic    4.03200000e+02    1.01290000e+00 # LN-HN
+bond_coeff 14 harmonic    4.00100000e+02    1.35130000e+00 # CT-OH
+bond_coeff 15 harmonic    3.71400000e+02    9.73000000e-01 # OH-HO
+bond_coeff 16 harmonic    3.45900000e+02    1.49060000e+00 # CA-CT
+bond_coeff 17 harmonic    6.37700000e+02    1.21830000e+00 # CT-O
+bond_coeff 18 harmonic    3.71400000e+02    9.73000000e-01 # OR-HO
+
+angle_coeff 1  harmonic    6.66000000e+01    1.20020052e+02 # CA-CA-CA
+angle_coeff 2  harmonic    4.82000000e+01    1.19880051e+02 # CA-CA-HA
+angle_coeff 3  harmonic    6.87000000e+01    1.22600053e+02 # CA-C-O
+angle_coeff 4  harmonic    6.43000000e+01    1.20330052e+02 # CA-CA-C
+angle_coeff 5  harmonic    6.77000000e+01    1.15250050e+02 # CA-LC-LN (TMC-side)
+angle_coeff 6  harmonic    6.38000000e+01    1.23710053e+02 # LC-LN-CA (MPD-side)
+angle_coeff 7  harmonic    4.83000000e+01    1.17550051e+02 # LC-LN-HN
+angle_coeff 8  harmonic    7.42000000e+01    1.23050053e+02 # O-LC-LN
+angle_coeff 9  harmonic    6.79000000e+01    1.20190052e+02 # N-CA-CA
+angle_coeff 10 harmonic    4.76000000e+01    1.16000050e+02 # CA-N-HN
+angle_coeff 11 harmonic    6.83000000e+01    1.20950052e+02 # CA-CA-NH
+angle_coeff 12 harmonic    4.84000000e+01    1.16070050e+02 # CA-NH-HN
+angle_coeff 13 harmonic    7.79000000e+01    1.30250056e+02 # O-C-O (does not exist in protonated monomers)
+angle_coeff 14 harmonic    4.01000000e+01    1.15120050e+02 # HN-NH-HN
+angle_coeff 15 harmonic    6.87000000e+01    1.22600053e+02 # CA-LC-O
+angle_coeff 16 harmonic    6.43000000e+01    1.20330052e+02 # CA-CA-LC
+angle_coeff 17 harmonic    6.79000000e+01    1.20190052e+02 # LN-CA-CA
+angle_coeff 18 harmonic    4.76000000e+01    1.16000050e+02 # CA-LN-HN
+angle_coeff 19 harmonic    6.92000000e+01    1.13450049e+02 # CA-CT-OH
+angle_coeff 20 harmonic    4.99000000e+01    1.06550046e+02 # CT-OH-HO
+angle_coeff 21 harmonic    7.59000000e+01    1.22100052e+02 # O-CT-OH
+angle_coeff 22 harmonic    6.87000000e+01    1.22600053e+02 # CA-CT-O
+angle_coeff 23 harmonic    6.43000000e+01    1.20330052e+02 # CA-CA-CT
+
+dihedral_coeff 1  charmm    3.62500000e+00         2       180         0 # CA-CA-CA-CA
+dihedral_coeff 2  charmm    1.10000000e+00         2       180         0 # CA-CA-CA-HA (improper)
+dihedral_coeff 3  charmm    1.00000000e+00         2       180         0 # CA-CA-C-O
+dihedral_coeff 4  charmm    2.50000000e+00         2       180         0 # CA-LC-LN-CA
+dihedral_coeff 5  charmm    1.05000000e+01         2       180         0 # CA-LC-LN-O
+dihedral_coeff 6  charmm    4.50000000e-01         2       180         0 # LC-LN-CA-CA
+dihedral_coeff 7  multi/harmonic    2.00000000e+00    2.00000000e+00    0.00000000e+00    0.00000000e+00    0.00000000e+00 # O-LC-LN-HN
+dihedral_coeff 8  charmm    1.05000000e+00         2       180         0 # CA-CA-NH-HN
+dihedral_coeff 9  charmm    3.62500000e+00         2       180         0 # CA-CA-CA-C
+dihedral_coeff 10 charmm    3.62500000e+00         2       180         0 # CA-CA-CA-LC
+dihedral_coeff 11 charmm    3.62500000e+00         2       180         0 # CA-CA-CA-HA
+dihedral_coeff 12 charmm    3.62500000e+00         2       180         0 # C-CA-CA-HA
+dihedral_coeff 13 charmm    3.62500000e+00         2       180         0 # LC-CA-CA-HA
+dihedral_coeff 14 charmm    3.62500000e+00         2       180         0 # N-CA-CA-CA
+dihedral_coeff 15 charmm    3.62500000e+00         2       180         0 # LN-CA-CA-CA
+dihedral_coeff 16 charmm    3.62500000e+00         2       180         0 # N-CA-CA-HA
+dihedral_coeff 17 charmm    3.62500000e+00         2       180         0 # LN-CA-CA-HA
+dihedral_coeff 18 charmm    3.62500000e+00         2       180         0 # CA-CA-CA-NH
+dihedral_coeff 19 charmm    3.62500000e+00         2       180         0 # HA-CA-CA-HA
+dihedral_coeff 20 charmm    3.62500000e+00         2       180         0 # HA-CA-CA-NH
+dihedral_coeff 21 charmm    1.10000000e+00         2       180         0 # CA-O-OH-CT (improper) (changed from CA-O-O-C in unprotonated)
+dihedral_coeff 22 charmm    1.10000000e+00         2       180         0 # CA-CA-CA-C (improper)
+dihedral_coeff 23 charmm    1.10000000e+00         2       180         0 # CA-CA-CA-LC (improper)
+dihedral_coeff 24 charmm    1.10000000e+00         2       180         0 # LC-CA-LN-HN (improper)
+dihedral_coeff 25 charmm    1.10000000e+00         2       180         0 # CA-CA-CA-N (improper)
+dihedral_coeff 26 charmm    1.10000000e+00         2       180         0 # CA-CA-CA-LN (improper)
+dihedral_coeff 27 charmm    1.10000000e+00         2       180         0 # CA-CA-CA-NH (improper)
+dihedral_coeff 28 charmm    1.10000000e+00         2       180         0 # CA-HN-NH-HN (improper)
+dihedral_coeff 29 charmm    1.00000000e+00         2       180         0 # CA-CA-LC-O
+dihedral_coeff 30 charmm    1.00000000e+00         2       180         0 # CA-CA-LC-LN
+dihedral_coeff 31 charmm    2.50000000e+00         2       180         0 # CA-LC-LN-HN
+dihedral_coeff 32 charmm    2.50000000e+00         2       180         0 # O-LC-LN-CA
+dihedral_coeff 33 charmm    2.50000000e+00         2       180         0 # O-LC-LN-HN
+dihedral_coeff 34 charmm    4.50000000e-01         2       180         0 # HN-LN-CA-CA
+dihedral_coeff 35 charmm    2.30000000e+00         2       180         0 # CA-CT-OH-HO
+dihedral_coeff 36 multi/harmonic    1.90000000e+00    1.90000000e+00    0.00000000e+00    0.00000000e+00    0.00000000e+00 # O-CT-OH-HO
+dihedral_coeff 37 charmm    4.50000000e-01         2       180         0 # CA-CA-N-HN
+dihedral_coeff 38 charmm    1.00000000e+00         2       180         0 # CA-CA-CT-OH
+dihedral_coeff 39 charmm    1.00000000e+00         2       180         0 # CA-CA-CT-O
+dihedral_coeff 40 charmm    3.62500000e+00         2       180         0 # CA-CA-CA-CT
+dihedral_coeff 41 charmm    3.62500000e+00         2       180         0 # CT-CA-CA-HA
+dihedral_coeff 42 charmm    1.10000000e+00         2       180         0 # CA-CA-CA-CT (improper)
+
+# Settings
+dielectric       1.0
+neighbor         2.0 bin
+neigh_modify     delay 0 every 1 check yes
+timestep         1.0
+run_style        verlet
+
+# Output
+thermo_style     custom step vol temp press etotal pe ke evdwl ecoul ebond eangle edihed eimp
+thermo           100
+
+# Minimization Step
+min_style        sd
+minimize         0.0 1.0e-4 2000 10000
+write_data       min.lmps
+
+min_style        cg
+min_modify       line quadratic
+minimize         0.0 1.0e-5 2000 10000
+
+# Data file output
+write_data       min.lmps
