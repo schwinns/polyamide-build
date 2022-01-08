@@ -1,0 +1,132 @@
+LAMMPS (29 Oct 2020)
+OMP_NUM_THREADS environment is not set. Defaulting to 1 thread. (../comm.cpp:94)
+  using 1 OpenMP thread(s) per MPI task
+using multi-threaded neighbor list subroutines
+using multi-threaded neighbor list subroutines
+Reading data file ...
+  orthogonal box = (-5.0000000 -5.0000000 -5.0000000) to (70.000000 70.000000 70.000000)
+  2 by 4 by 4 MPI processor grid
+WARNING: Pair style in data file differs from currently defined pair style (../read_data.cpp:588)
+WARNING: Bond style in data file differs from currently defined bond style (../read_data.cpp:608)
+WARNING: Angle style in data file differs from currently defined angle style (../read_data.cpp:619)
+WARNING: Dihedral style in data file differs from currently defined dihedral style (../read_data.cpp:630)
+  reading atoms ...
+  6690 atoms
+  scanning bonds ...
+  3 = max bonds/atom
+  scanning angles ...
+  3 = max angles/atom
+  scanning dihedrals ...
+  11 = max dihedrals/atom
+  reading bonds ...
+  6690 bonds
+  reading angles ...
+  9486 angles
+  reading dihedrals ...
+  16176 dihedrals
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0.0      0.0      0.5     
+  special bond factors coul:  0.0      0.0      0.83333333
+     3 = max # of 1-2 neighbors
+     6 = max # of 1-3 neighbors
+    11 = max # of 1-4 neighbors
+    13 = max # of special neighbors
+  special bonds CPU = 0.008 seconds
+  read_data CPU = 0.110 seconds
+WARNING: Using 'neigh_modify every 1 delay 0 check yes' setting during minimization (../min.cpp:187)
+Last active /omp style is dihedral_style multi/harmonic
+Neighbor list info ...
+  update every 1 steps, delay 0 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 17
+  ghost atom cutoff = 17
+  binsize = 8.5, bins = 9 9 9
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair lj/cut/omp, perpetual
+      attributes: half, newton on, omp
+      pair build: half/bin/newton/omp
+      stencil: half/bin/3d/newton
+      bin: standard
+Setting up sd style minimization ...
+  Unit style    : real
+  Current step  : 0
+Per MPI rank memory allocation (min/avg/max) = 14.01 | 14.06 | 14.54 Mbytes
+E_bond E_angle E_dihed E_impro E_pair E_vdwl E_coul E_long E_tail PotEng 
+   542.68462    231.73445    389.48756            0    4034.1027    4034.1027            0            0            0    5198.0093 
+   90.509982     80.37076    442.90631            0    643.51353    643.51353            0            0            0    1257.3006 
+Loop time of 0.239335 on 32 procs for 100 steps with 6690 atoms
+
+98.5% CPU use with 32 MPI tasks x 1 OpenMP threads
+
+Minimization stats:
+  Stopping criterion = max iterations
+  Energy initial, next-to-last, final = 
+      5198.00931277626   1258.48862511088   1257.30058264155
+  Force two-norm initial, final = 4020.3493 58.199332
+  Force max component initial, final = 1317.9857 5.4400831
+  Final line search alpha, max atom move = 0.011204625 0.060954089
+  Iterations, force evaluations = 100 195
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.022942   | 0.09642    | 0.19661    |  14.2 | 40.29
+Bond    | 0.0056372  | 0.0091095  | 0.014795   |   2.2 |  3.81
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0.020856   | 0.12627    | 0.20199    |  12.8 | 52.76
+Output  | 0.00015745 | 0.00016331 | 0.00033113 |   0.0 |  0.07
+Modify  | 0.00098372 | 0.0018269  | 0.0027277  |   1.1 |  0.76
+Other   |            | 0.005541   |            |       |  2.32
+
+Nlocal:        209.062 ave         324 max         126 min
+Histogram: 5 3 3 2 6 4 5 3 0 1
+Nghost:        2532.66 ave        3401 max        1682 min
+Histogram: 6 4 6 0 0 0 2 5 2 7
+Neighs:        38287.2 ave       79274 max       10264 min
+Histogram: 4 3 3 8 2 4 5 1 1 1
+
+Total # of neighbors = 1225191
+Ave neighs/atom = 183.13767
+Ave special neighs/atom = 8.4331839
+Neighbor list builds = 0
+Dangerous builds = 0
+Last active /omp style is dihedral_style multi/harmonic
+Setting up Verlet run ...
+  Unit style    : real
+  Current step  : 100
+  Time step     : 1.0
+Per MPI rank memory allocation (min/avg/max) = 12.88 | 12.94 | 13.41 Mbytes
+E_bond E_angle E_dihed E_impro E_pair E_vdwl E_coul E_long E_tail PotEng 
+   90.509982     80.37076    442.90631            0    643.51353    643.51353            0            0            0    1257.3006 
+   2015.1771     1602.023    1734.2126            0   -2204.2703   -2204.2703            0            0            0    3147.1423 
+Loop time of 369.394 on 32 procs for 100000 steps with 6690 atoms
+
+Performance: 23.390 ns/day, 1.026 hours/ns, 270.713 timesteps/s
+99.0% CPU use with 32 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 1.4852     | 69.261     | 278.67     |1112.8 | 18.75
+Bond    | 0.86193    | 4.402      | 12.508     | 195.7 |  1.19
+Neigh   | 33.988     | 34.219     | 34.521     |   2.7 |  9.26
+Comm    | 42.183     | 254.72     | 324.74     | 591.8 | 68.96
+Output  | 0.0011329  | 0.0022051  | 0.0031257  |   1.2 |  0.00
+Modify  | 3.0542     | 6.2417     | 22.33      | 190.7 |  1.69
+Other   |            | 0.5447     |            |       |  0.15
+
+Nlocal:        209.062 ave         786 max           0 min
+Histogram: 15 4 3 0 1 2 3 2 1 1
+Nghost:        2608.59 ave        4580 max         963 min
+Histogram: 5 3 4 3 6 3 0 0 0 8
+Neighs:        92792.3 ave      389372 max           0 min
+Histogram: 19 2 2 1 0 1 1 3 2 1
+
+Total # of neighbors = 2969354
+Ave neighs/atom = 443.84963
+Ave special neighs/atom = 8.4331839
+Neighbor list builds = 4833
+Dangerous builds = 0
+System init for write_data ...
+Last active /omp style is dihedral_style multi/harmonic
+Total wall time: 0:06:09
