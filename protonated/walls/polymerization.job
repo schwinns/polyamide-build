@@ -1,0 +1,17 @@
+#!/bin/bash
+#SBATCH -N 1 --ntasks-per-node=64
+#SBATCH -t 4:00:00
+#SBATCH -p RM-shared
+#SBATCH -J 'polymerization'
+#SBATCH -o '%x.out'
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=nasc4134@colorado.edu
+
+module load intel/20.4
+module load intelmpi
+module load LAMMPS/29Oct20-intel
+source /jet/home/schwinns/.bashrc
+conda activate py2
+export PERL5LIB=$PERL5LIB:/jet/home/schwinns/perl5/lib/perl5
+
+./polym_loop.py > out.txt

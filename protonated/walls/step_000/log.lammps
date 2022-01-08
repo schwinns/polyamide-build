@@ -1,0 +1,260 @@
+LAMMPS (29 Oct 2020)
+OMP_NUM_THREADS environment is not set. Defaulting to 1 thread. (../comm.cpp:94)
+  using 1 OpenMP thread(s) per MPI task
+package omp 0
+using multi-threaded neighbor list subroutines
+package omp 1
+using multi-threaded neighbor list subroutines
+# Energy minimization script with class2 ff for simulated polymerization
+
+# System
+units            real
+atom_style       full
+dimension        3
+newton           on
+boundary         p p f
+
+# Styles
+bond_style      hybrid harmonic
+angle_style     hybrid harmonic
+dihedral_style  hybrid charmm multi/harmonic
+special_bonds   lj 0.0 0.0 0.5 coul 0.0 0.0 0.83333333
+pair_style      lj/cut/coul/long 15.0
+#pair_modify     tail yes
+pair_modify     mix arithmetic
+kspace_style    pppm 1e-8
+kspace_modify   slab 3.0
+
+# Data file input
+read_data        data.lmps
+Reading data file ...
+  orthogonal box = (-5.0000000 -5.0000000 -5.0000000) to (70.000000 70.000000 70.000000)
+  1 by 1 by 1 MPI processor grid
+  reading atoms ...
+  6690 atoms
+  scanning bonds ...
+  3 = max bonds/atom
+  scanning angles ...
+  3 = max angles/atom
+  scanning dihedrals ...
+  11 = max dihedrals/atom
+  reading bonds ...
+  6690 bonds
+  reading angles ...
+  9486 angles
+  reading dihedrals ...
+  16176 dihedrals
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0.0      0.0      0.5     
+  special bond factors coul:  0.0      0.0      0.83333333
+     3 = max # of 1-2 neighbors
+     6 = max # of 1-3 neighbors
+    11 = max # of 1-4 neighbors
+    13 = max # of special neighbors
+  special bonds CPU = 0.003 seconds
+  read_data CPU = 0.036 seconds
+
+# Coefficients
+pair_coeff 1 1 0.0860000 3.3996695 # CA
+pair_coeff 2 2 0.0150000 2.5996425 # HA
+pair_coeff 3 3 0.0860000 3.3996695 # C
+pair_coeff 4 4 0.2100000 2.9599219 # O
+pair_coeff 5 5 0.1700000 3.2499985 # N
+pair_coeff 6 6 0.0157000 1.0690785 # HN
+pair_coeff 7 7 0.2104000 3.0664734 # OH
+pair_coeff 8 8 0.1700000 3.2499985 # NH
+pair_coeff 9 9 0.0000000 0.0000000 # HO
+pair_coeff 10 10 0.0860000 3.3996695 # LC
+pair_coeff 11 11 0.1700000 3.2499985 # LN
+pair_coeff 12 12 0.0860000 3.3996695 # CT
+
+bond_coeff 1  harmonic    4.61100000e+02    1.39840000e+00 # CA-CA
+bond_coeff 2  harmonic    3.45900000e+02    1.49060000e+00 # CA-C
+bond_coeff 3  harmonic    3.45800000e+02    1.08600000e+00 # CA-HA
+bond_coeff 4  harmonic    6.37700000e+02    1.21830000e+00 # C-O
+bond_coeff 5  harmonic    4.27600000e+02    1.37890000e+00 # LC-LN
+bond_coeff 6  harmonic    3.84200000e+02    1.41210000e+00 # N-CA
+bond_coeff 7  harmonic    4.03200000e+02    1.01290000e+00 # N-HN
+bond_coeff 8  harmonic    4.17900000e+02    1.38590000e+00 # CA-NH
+bond_coeff 9  harmonic    4.04600000e+02    1.01210000e+00 # NH-HN
+bond_coeff 10 harmonic    3.45900000e+02    1.49060000e+00 # CA-LC
+bond_coeff 11 harmonic    6.37700000e+02    1.21830000e+00 # LC-O
+bond_coeff 12 harmonic    3.84200000e+02    1.41210000e+00 # LN-CA
+bond_coeff 13 harmonic    4.03200000e+02    1.01290000e+00 # LN-HN
+bond_coeff 14 harmonic    4.00100000e+02    1.35130000e+00 # CT-OH
+bond_coeff 15 harmonic    3.71400000e+02    9.73000000e-01 # OH-HO
+bond_coeff 16 harmonic    3.45900000e+02    1.49060000e+00 # CA-CT
+bond_coeff 17 harmonic    6.37700000e+02    1.21830000e+00 # CT-O
+
+angle_coeff 1  harmonic    6.66000000e+01    1.20020052e+02 # CA-CA-CA
+angle_coeff 2  harmonic    4.82000000e+01    1.19880051e+02 # CA-CA-HA
+angle_coeff 3  harmonic    6.87000000e+01    1.22600053e+02 # CA-C-O
+angle_coeff 4  harmonic    6.43000000e+01    1.20330052e+02 # CA-CA-C
+angle_coeff 5  harmonic    6.77000000e+01    1.15250050e+02 # CA-LC-LN (TMC-side)
+angle_coeff 6  harmonic    6.38000000e+01    1.23710053e+02 # LC-LN-CA (MPD-side)
+angle_coeff 7  harmonic    4.83000000e+01    1.17550051e+02 # LC-LN-HN
+angle_coeff 8  harmonic    7.42000000e+01    1.23050053e+02 # O-LC-LN
+angle_coeff 9  harmonic    6.79000000e+01    1.20190052e+02 # N-CA-CA
+angle_coeff 10 harmonic    4.76000000e+01    1.16000050e+02 # CA-N-HN
+angle_coeff 11 harmonic    6.83000000e+01    1.20950052e+02 # CA-CA-NH
+angle_coeff 12 harmonic    4.84000000e+01    1.16070050e+02 # CA-NH-HN
+angle_coeff 13 harmonic    7.79000000e+01    1.30250056e+02 # O-C-O (does not exist in protonated monomers)
+angle_coeff 14 harmonic    4.01000000e+01    1.15120050e+02 # HN-NH-HN
+angle_coeff 15 harmonic    6.87000000e+01    1.22600053e+02 # CA-LC-O
+angle_coeff 16 harmonic    6.43000000e+01    1.20330052e+02 # CA-CA-LC
+angle_coeff 17 harmonic    6.79000000e+01    1.20190052e+02 # LN-CA-CA
+angle_coeff 18 harmonic    4.76000000e+01    1.16000050e+02 # CA-LN-HN
+angle_coeff 19 harmonic    6.92000000e+01    1.13450049e+02 # CA-CT-OH
+angle_coeff 20 harmonic    4.99000000e+01    1.06550046e+02 # CT-OH-HO
+angle_coeff 21 harmonic    7.59000000e+01    1.22100052e+02 # O-CT-OH
+angle_coeff 22 harmonic    6.87000000e+01    1.22600053e+02 # CA-CT-O
+angle_coeff 23 harmonic    6.43000000e+01    1.20330052e+02 # CA-CA-CT
+
+dihedral_coeff 1  charmm    3.62500000e+00         2       180         0 # CA-CA-CA-CA
+dihedral_coeff 2  charmm    1.10000000e+00         2       180         0 # CA-CA-CA-HA (improper)
+dihedral_coeff 3  charmm    1.00000000e+00         2       180         0 # CA-CA-C-O
+dihedral_coeff 4  charmm    2.50000000e+00         2       180         0 # CA-LC-LN-CA
+dihedral_coeff 5  charmm    1.05000000e+01         2       180         0 # CA-LC-LN-O
+dihedral_coeff 6  charmm    4.50000000e-01         2       180         0 # LC-LN-CA-CA
+dihedral_coeff 7  multi/harmonic    2.00000000e+00    2.00000000e+00    0.00000000e+00    0.00000000e+00    0.00000000e+00 # O-LC-LN-HN
+dihedral_coeff 8  charmm    1.05000000e+00         2       180         0 # CA-CA-NH-HN
+dihedral_coeff 9  charmm    3.62500000e+00         2       180         0 # CA-CA-CA-C
+dihedral_coeff 10 charmm    3.62500000e+00         2       180         0 # CA-CA-CA-LC
+dihedral_coeff 11 charmm    3.62500000e+00         2       180         0 # CA-CA-CA-HA
+dihedral_coeff 12 charmm    3.62500000e+00         2       180         0 # C-CA-CA-HA
+dihedral_coeff 13 charmm    3.62500000e+00         2       180         0 # LC-CA-CA-HA
+dihedral_coeff 14 charmm    3.62500000e+00         2       180         0 # N-CA-CA-CA
+dihedral_coeff 15 charmm    3.62500000e+00         2       180         0 # LN-CA-CA-CA
+dihedral_coeff 16 charmm    3.62500000e+00         2       180         0 # N-CA-CA-HA
+dihedral_coeff 17 charmm    3.62500000e+00         2       180         0 # LN-CA-CA-HA
+dihedral_coeff 18 charmm    3.62500000e+00         2       180         0 # CA-CA-CA-NH
+dihedral_coeff 19 charmm    3.62500000e+00         2       180         0 # HA-CA-CA-HA
+dihedral_coeff 20 charmm    3.62500000e+00         2       180         0 # HA-CA-CA-NH
+dihedral_coeff 21 charmm    1.10000000e+00         2       180         0 # CA-O-OH-CT (improper) (changed from CA-O-O-C in unprotonated)
+dihedral_coeff 22 charmm    1.10000000e+00         2       180         0 # CA-CA-CA-C (improper)
+dihedral_coeff 23 charmm    1.10000000e+00         2       180         0 # CA-CA-CA-LC (improper)
+dihedral_coeff 24 charmm    1.10000000e+00         2       180         0 # LC-CA-LN-HN (improper)
+dihedral_coeff 25 charmm    1.10000000e+00         2       180         0 # CA-CA-CA-N (improper)
+dihedral_coeff 26 charmm    1.10000000e+00         2       180         0 # CA-CA-CA-LN (improper)
+dihedral_coeff 27 charmm    1.10000000e+00         2       180         0 # CA-CA-CA-NH (improper)
+dihedral_coeff 28 charmm    1.10000000e+00         2       180         0 # CA-HN-NH-HN (improper)
+dihedral_coeff 29 charmm    1.00000000e+00         2       180         0 # CA-CA-LC-O
+dihedral_coeff 30 charmm    1.00000000e+00         2       180         0 # CA-CA-LC-LN
+dihedral_coeff 31 charmm    2.50000000e+00         2       180         0 # CA-LC-LN-HN
+dihedral_coeff 32 charmm    2.50000000e+00         2       180         0 # O-LC-LN-CA
+dihedral_coeff 33 charmm    2.50000000e+00         2       180         0 # O-LC-LN-HN
+dihedral_coeff 34 charmm    4.50000000e-01         2       180         0 # HN-LN-CA-CA
+dihedral_coeff 35 charmm    2.30000000e+00         2       180         0 # CA-CT-OH-HO
+dihedral_coeff 36 multi/harmonic    1.90000000e+00    1.90000000e+00    0.00000000e+00    0.00000000e+00    0.00000000e+00 # O-CT-OH-HO
+dihedral_coeff 37 charmm    4.50000000e-01         2       180         0 # CA-CA-N-HN
+dihedral_coeff 38 charmm    1.00000000e+00         2       180         0 # CA-CA-CT-OH
+dihedral_coeff 39 charmm    1.00000000e+00         2       180         0 # CA-CA-CT-O
+dihedral_coeff 40 charmm    3.62500000e+00         2       180         0 # CA-CA-CA-CT
+dihedral_coeff 41 charmm    3.62500000e+00         2       180         0 # CT-CA-CA-HA
+dihedral_coeff 42 charmm    1.10000000e+00         2       180         0 # CA-CA-CA-CT (improper)
+
+# Settings
+dielectric       1.0
+neighbor         2.0 bin
+neigh_modify     delay 0 every 1 check yes
+timestep         1.0
+run_style        verlet
+
+# Output
+thermo_style     custom step vol temp press etotal pe ke evdwl ecoul ebond eangle edihed eimp
+thermo           100
+
+# Minimization Step
+min_style        sd
+minimize         1.0e-3 1.0e-3 1000 100000
+PPPM initialization ...
+  using 12-bit tables for long-range coulomb (../kspace.cpp:328)
+  G vector (1/distance) = 0.23589159
+  grid = 90 90 200
+  stencil order = 5
+  estimated absolute RMS force accuracy = 4.1959812e-06
+  estimated relative force accuracy = 1.2636073e-08
+  using double precision MKL FFT
+  3d grid and FFT values/proc = 1910027 1620000
+Last active /omp style is kspace_style pppm/omp
+Neighbor list info ...
+  update every 1 steps, delay 0 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 17
+  ghost atom cutoff = 17
+  binsize = 8.5, bins = 9 9 9
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair lj/cut/coul/long/omp, perpetual
+      attributes: half, newton on, omp
+      pair build: half/bin/newton/omp
+      stencil: half/bin/3d/newton
+      bin: standard
+WARNING: Inconsistent image flags (../domain.cpp:812)
+Per MPI rank memory allocation (min/avg/max) = 235.8 | 235.8 | 235.8 Mbytes
+Step Volume Temp Press TotEng PotEng KinEng E_vdwl E_coul E_bond E_angle E_dihed E_impro 
+       0       421875            0    468.80201     21858.94     21858.94            0   -2204.2703     1650.227    2015.1771     1602.023    1734.2126            0 
+     100       421875            0    12.063243    10730.815    10730.815            0   -2175.0565   -89.679008    232.12104    312.76877    1102.3833            0 
+     200       421875            0    207.88986    7788.9258    7788.9258            0    -1890.187   -748.89433    210.82003    288.33516    1096.8027            0 
+     300       421875            0    383.96329    5688.3946    5688.3946            0   -1672.6931   -1188.2425    195.25871      265.981    1082.3846            0 
+     400       421875            0    500.84012    4012.3114    4012.3114            0   -1521.5518   -1517.6081    183.86014    247.94287    1073.9988            0 
+     500       421875            0    586.77603    2595.1311    2595.1311            0   -1406.8065   -1787.8902    174.90195    236.63626    1060.2924            0 
+     600       421875            0    644.87026    1416.4307    1416.4307            0   -1321.2518    -2007.372    166.72268     226.0945    1038.2436            0 
+     700       421875            0    685.96343    419.74508    419.74508            0    -1254.497   -2188.2349    160.20343    216.00979    1011.2543            0 
+     800       421875            0    718.08856    -601.2477    -601.2477            0   -1192.9556   -2370.6504    154.14334     205.6062    980.65209            0 
+     900       421875            0    739.79279   -2182.1729   -2182.1729            0   -1120.1857   -2649.9588     146.2334    192.59095    939.02892            0 
+    1000       421875            0    733.38542   -3196.7522   -3196.7522            0   -1092.9041   -2823.6978    141.50023    183.08956    905.30184            0 
+Loop time of 498.073 on 1 procs for 1000 steps with 6690 atoms
+
+99.5% CPU use with 1 MPI tasks x 1 OpenMP threads
+
+Minimization stats:
+  Stopping criterion = max iterations
+  Energy initial, next-to-last, final = 
+      21858.9403548304  -3186.34384141171  -3196.75220464468
+  Force two-norm initial, final = 3148.8876 112.30239
+  Force max component initial, final = 103.83917 11.900592
+  Final line search alpha, max atom move = 0.0019005538 0.022617714
+  Iterations, force evaluations = 1000 2001
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 120.85     | 120.85     | 120.85     |   0.0 | 24.26
+Bond    | 2.8263     | 2.8263     | 2.8263     |   0.0 |  0.57
+Kspace  | 373.93     | 373.93     | 373.93     |   0.0 | 75.07
+Neigh   | 0.27691    | 0.27691    | 0.27691    |   0.0 |  0.06
+Comm    | 0.024346   | 0.024346   | 0.024346   |   0.0 |  0.00
+Output  | 0.0016085  | 0.0016085  | 0.0016085  |   0.0 |  0.00
+Modify  | 0.010769   | 0.010769   | 0.010769   |   0.0 |  0.00
+Other   |            | 0.1608     |            |       |  0.03
+
+Nlocal:        6690.00 ave        6690 max        6690 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:        1805.00 ave        1805 max        1805 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:    2.96497e+06 ave 2.96497e+06 max 2.96497e+06 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 2964969
+Ave neighs/atom = 443.19417
+Ave special neighs/atom = 8.4331839
+Neighbor list builds = 5
+Dangerous builds = 0
+min_style        cg
+min_modify       line quadratic
+minimize         1.0e-4 1.0e-4 1000 100000
+PPPM initialization ...
+  using 12-bit tables for long-range coulomb (../kspace.cpp:328)
+  G vector (1/distance) = 0.23589159
+  grid = 90 90 200
+  stencil order = 5
+  estimated absolute RMS force accuracy = 4.1959812e-06
+  estimated relative force accuracy = 1.2636073e-08
+  using double precision MKL FFT
+  3d grid and FFT values/proc = 1910027 1620000
+Last active /omp style is kspace_style pppm/omp
+WARNING: Inconsistent image flags (../domain.cpp:812)
+Per MPI rank memory allocation (min/avg/max) = 235.8 | 235.8 | 235.8 Mbytes
+Step Volume Temp Press TotEng PotEng KinEng E_vdwl E_coul E_bond E_angle E_dihed E_impro 
+    1000       421875            0    733.38542   -3196.7522   -3196.7522            0   -1092.9041   -2823.6978    141.50023    183.08956    905.30184            0 
+ERROR on proc 0: Bond atoms 5315 5319 missing on proc 0 at step 1020 (../ntopo_bond_all.cpp:60)

@@ -23,7 +23,7 @@ def check_N(N, atoms_top):
     #       6
 
     n_NH = 0
-    if atoms_top[C]['type'] == '8':
+    if atoms_top[N]['type'] == '8':
         n_NH += 1
 
     # check the other N on MPD to determine MPD-L/MPD-T    
@@ -32,7 +32,7 @@ def check_N(N, atoms_top):
             for a1 in atoms_top[a0]['bonded']:
                 if atoms_top[a1]['type'] == '1': # 2/4 and 6 positions
                     for a2 in atoms_top[a1]['bonded']:
-                        if atoms_top[a2]['type'] == '1': # 1 and 3/5 positions
+                        if atoms_top[a2]['type'] == '1' and not a2 == a0: # 1 and 3/5 positions
                             for a3 in atoms_top[a2]['bonded']:
                                 if atoms[a3]['type'] == '8':
                                     n_NH += 1
@@ -122,9 +122,8 @@ def find_C(atom, atoms_top):
 ######################### CREATE DICTIONARIES WITH FULL TOPOLOGY ######################
 #######################################################################################
 
-# f = open(args.lmps, 'r')
-f = open('hydrated_initial.lmps', 'r')
-# f = open('1MPD-1TMC.lmps', 'r')
+f = open(args.lmps, 'r')
+# f = open('2MPD-2TMC.lmps', 'r')
 
 # Skip everything before atoms
 for line in f:
@@ -246,19 +245,25 @@ f.close()
 charges = {}
 for atom in atoms:
 
-    if atoms[atom]['type'] == '11': # LN
+    if atoms[atom]['type'] == '15':
+        charges[atom] = -0.830
 
-        mono_type = check_N(atom, atoms_top=atoms)
-        if mono_type == 'MPD-T':
+    elif atoms[atom]['type'] == '16':
+        charges[atom] = 0.415
+
+    elif atoms[atom]['type'] == '11': # LN
+
+        n_NH = check_N(atom, atoms_top=atoms)
+        if n_NH == 1:
             charges[atom] = -0.421
-        elif mono_type == 'MPD-L':
+        elif n_NH == 0:
             charges[atom] = -0.4025
     
     elif atoms[atom]['type'] == '6': # HN
 
         for a in atoms[atom]['bonded']: 
             if atoms[a]['type'] == '8': # HN on NH
-                charges[atom] = 0.3728 / 2 
+                charges[atom] = 0.3728
             elif atoms[a]['type'] == '11': # HN on LN in MPD-L
 
                 # determine MPD-L/MPD-T
@@ -346,7 +351,6 @@ for atom in atoms:
 
         elif '11' in bonded_types: # CA bonded to LN
             N = bonded_types['11'][0]
-
             n_NH = check_N(N, atoms_top=atoms)
             if n_NH == 1:
                 charges[atom] = 0.3883
@@ -402,16 +406,19 @@ for atom in atoms:
             elif '8' in bonded_types_next[0] and '11' in bonded_types_next[1]: # MPD-T CA in 6 position
                 charges[atom] = -0.3154
 
+            elif '8' in bonded_types_next[1] and '11' in bonded_types_next[0]: # MPD-T CA in 6 position
+                charges[atom] = -0.3154
+
             elif '2' in bonded_types_next[0] and '11' in bonded_types_next[1]: # MPD CA in 2/4 position
                 N = find_N(atom, atoms_top=atoms)
                 N_type = atoms[N]['type']
                 if N_type == '8': # MPD-T
                     charges[atom] = -0.2315
                 elif N_type == '11':
-                    mono_type = check_N(N, atoms_top=atoms)
-                    if mono_type == 'MPD-L': # MPD-L
+                    n_NH = check_N(N, atoms_top=atoms)
+                    if n_NH == 0: # MPD-L
                         charges[atom] = 0.3365
-                    elif mono_type == 'MPD-T': # MPD-T
+                    elif n_NH == 1: # MPD-T
                         charges[atom] = -0.2315
 
             elif '2' in bonded_types_next[1] and '11' in bonded_types_next[0]: # MPD CA in 2/4 position
@@ -459,13 +466,14 @@ for atom in atoms:
                     charges[atom] = 0.06005
                 elif n_CT == 2:
                     charges[atom] = 0.0692
+
                 
+    # print(charges)
 
 #######################################################################################
 ###################### WRITE A NEW LAMMPS FILE WITH CORRECT CHARGES ###################
 #######################################################################################
 
-exit()
 total_charge = 0
 f = open(args.lmps, 'r')
 out = open(args.output, 'w')
@@ -474,7 +482,7 @@ for line in f:
 
     if line.startswith('Atoms'):
         out.write(line)
-        out.write('\n')
+        # out.write('\n')
         break
 
     else:
@@ -520,6 +528,7 @@ for line in f:
 if vel:
     for line in f:
         if line.startswith('Bonds'):
+            out.write(line)
             break
 
 # Write all other sections unchanged

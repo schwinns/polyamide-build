@@ -27,7 +27,7 @@ def check_N(N, atoms_top):
     #       6
 
     n_NH = 0
-    if atoms_top[C]['type'] == '8':
+    if atoms_top[N]['type'] == '8':
         n_NH += 1
 
     # check the other N on MPD to determine MPD-L/MPD-T    
@@ -36,7 +36,7 @@ def check_N(N, atoms_top):
             for a1 in atoms_top[a0]['bonded']:
                 if atoms_top[a1]['type'] == '1': # 2/4 and 6 positions
                     for a2 in atoms_top[a1]['bonded']:
-                        if atoms_top[a2]['type'] == '1': # 1 and 3/5 positions
+                        if atoms_top[a2]['type'] == '1'  and not a2 == a0: # 1 and 3/5 positions
                             for a3 in atoms_top[a2]['bonded']:
                                 if atoms[a3]['type'] == '8':
                                     n_NH += 1
@@ -390,6 +390,16 @@ for atom in atoms:
                 atoms[a]['delete'] = True
                 for a0 in atoms[a]['bonded']:
                     atoms[a0]['delete'] = True
+                    for bond in bonds:
+                        if atom in bonds[bond]['atoms'] or a in bonds[bond]['atoms'] or a0 in bonds[bond]['atoms']:
+                            bonds[bond]['delete'] = True
+                    for angle in angles:
+                        if atom in angles[angle]['atoms'] or a in angles[angle]['atoms'] or a0 in angles[angle]['atoms']:
+                            angles[angle]['delete'] = True
+                    for dih in dihedrals:
+                        if atom in dihedrals[dih]['atoms'] or a in dihedrals[dih]['atoms'] or a0 in dihedrals[dih]['atoms']:
+                            dihedrals[dih]['delete'] = True
+                    
 
     elif atoms[atom]['type'] == '8': # check is both N's are terminated in MPD
 
@@ -400,8 +410,17 @@ for atom in atoms:
                 atoms[a]['delete'] = True
                 for a0 in atoms[a]['bonded']:
                     atoms[a0]['delete'] = True
-                    for a1 in atoms[a0]['bonded']
+                    for a1 in atoms[a0]['bonded']:
                         atoms[a1]['delete'] = True
+                        for bond in bonds:
+                            if atom in bonds[bond]['atoms'] or a in bonds[bond]['atoms'] or a0 in bonds[bond]['atoms'] or a1 in bonds[bond]['atoms']:
+                                bonds[bond]['delete'] = True
+                        for angle in angles:
+                            if atom in angles[angle]['atoms'] or a in angles[angle]['atoms'] or a0 in angles[angle]['atoms'] or a1 in angles[angle]['atoms']:
+                                angles[angle]['delete'] = True
+                        for dih in dihedrals:
+                            if atom in dihedrals[dih]['atoms'] or a in dihedrals[dih]['atoms'] or a0 in dihedrals[dih]['atoms'] or a1 in dihedrals[dih]['atoms']:
+                                dihedrals[dih]['delete'] = True
 
 #######################################################################################
 #################### WRITE A NEW LAMMPS FILE WITH CORRECT PROTONATION #################

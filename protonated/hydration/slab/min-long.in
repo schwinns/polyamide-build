@@ -141,7 +141,7 @@ thermo           100
 # Minimization Step
 min_style        sd
 minimize         0.0 1.0e-4 2000 10000
-write_data      min.lmps
+write_data       min.lmps
 
 min_style        cg
 min_modify       line quadratic
