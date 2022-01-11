@@ -132,11 +132,11 @@ thermo_style     custom step vol temp press etotal pe ke evdwl ecoul ebond eangl
 thermo           500
 
 # MD step
-fix             walllo all wall/lj126 zlo EDGE 1.0 1.0 10.0
-fix             wallhi all wall/lj126 zhi EDGE 1.0 1.0 10.0
+fix              walllo all wall/lj126 zlo EDGE 0.1 1.0 10.0
+fix              wallhi all wall/lj126 zhi EDGE 0.1 1.0 10.0
 fix              1 all nvt temp 600 600 100.0
 velocity         all create 600 58531416
-run              10000
+run              5000
 unfix            1
 
 # Data file output

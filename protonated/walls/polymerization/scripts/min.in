@@ -1,4 +1,4 @@
-# Molecular dynamics NPT script with class2 ff for simulated polymerization
+# Energy minimization script with class2 ff for simulated polymerization
 
 # System
 units            real
@@ -129,15 +129,16 @@ run_style        verlet
 
 # Output
 thermo_style     custom step vol temp press etotal pe ke evdwl ecoul ebond eangle edihed eimp
-thermo           500
+thermo           100
 
-# MD step
-fix             walllo all wall/lj126 zlo EDGE 1.0 1.0 10.0
-fix             wallhi all wall/lj126 zhi EDGE 1.0 1.0 10.0
-fix              1 all npt temp 300 300 100.0 iso 1 1 100.0
-velocity         all create 300 58447419
-run              20000
-unfix            1
+# Minimization Step
+fix              walllo all wall/lj126 zlo EDGE 0.1 1.0 10.0
+fix              wallhi all wall/lj126 zhi EDGE 0.1 1.0 10.0
+min_style        sd
+minimize         1.0e-3 1.0e-3 1000 100000
+min_style        cg
+min_modify       line quadratic
+minimize         1.0e-4 1.0e-4 1000 100000
 
 # Data file output
-write_data       md.lmps
+write_data       min.lmps

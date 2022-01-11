@@ -21,11 +21,11 @@ read_data       packed_no_charges.lmps
 dump            1 all custom 100000 data.lmps id mol type q x y z
 thermo_style    custom ebond eangle edihed eimp epair evdwl ecoul elong etail pe
 
+fix             walllo all wall/lj126 zlo EDGE 0.1 1.0 10.0
+fix             wallhi all wall/lj126 zhi EDGE 0.1 1.0 10.0
 min_style       sd
 minimize        1.0e-4 1.0e-6 100 1000
 
-fix             walllo all wall/lj126 zlo EDGE 1.0 1.0 10.0
-fix             wallhi all wall/lj126 zhi EDGE 1.0 1.0 10.0
 fix             1 all nvt temp 300 300 100
 velocity        all create 300 1234
 run             100000
