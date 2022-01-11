@@ -1,0 +1,57 @@
+LAMMPS (29 Oct 2020)
+OMP_NUM_THREADS environment is not set. Defaulting to 1 thread. (../comm.cpp:94)
+  using 1 OpenMP thread(s) per MPI task
+using multi-threaded neighbor list subroutines
+using multi-threaded neighbor list subroutines
+Reading data file ...
+  orthogonal box = (-5.0000000 -5.0000000 -5.0000000) to (70.000000 70.000000 70.000000)
+  2 by 4 by 4 MPI processor grid
+  reading atoms ...
+  6690 atoms
+  scanning bonds ...
+  3 = max bonds/atom
+  scanning angles ...
+  3 = max angles/atom
+  scanning dihedrals ...
+  12 = max dihedrals/atom
+  reading bonds ...
+  6691 bonds
+  reading angles ...
+  9490 angles
+  reading dihedrals ...
+  16184 dihedrals
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0.0      0.0      0.5     
+  special bond factors coul:  0.0      0.0      0.83333333
+     3 = max # of 1-2 neighbors
+     6 = max # of 1-3 neighbors
+    12 = max # of 1-4 neighbors
+    14 = max # of special neighbors
+  special bonds CPU = 0.006 seconds
+  read_data CPU = 0.062 seconds
+PPPM initialization ...
+  using 12-bit tables for long-range coulomb (../kspace.cpp:328)
+  G vector (1/distance) = 0.2358898
+  grid = 90 90 200
+  stencil order = 5
+  estimated absolute RMS force accuracy = 4.187853e-06
+  estimated relative force accuracy = 1.2611595e-08
+  using double precision MKL FFT
+  3d grid and FFT values/proc = 238680 155250
+Last active /omp style is kspace_style pppm/omp
+Neighbor list info ...
+  update every 1 steps, delay 0 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 17
+  ghost atom cutoff = 17
+  binsize = 8.5, bins = 9 9 9
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair lj/cut/coul/long/omp, perpetual
+      attributes: half, newton on, omp
+      pair build: half/bin/newton/omp
+      stencil: half/bin/3d/newton
+      bin: standard
+Setting up sd style minimization ...
+  Unit style    : real
+  Current step  : 0
+ERROR on proc 0: Bond atom missing in image check (../domain.cpp:792)
