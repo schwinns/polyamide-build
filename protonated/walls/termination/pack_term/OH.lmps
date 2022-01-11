@@ -1,0 +1,26 @@
+
+
+2 atoms
+1 bonds
+0 angles
+0 dihedrals
+0 impropers
+
+14 atom types
+18 bond types
+23 angle types
+42 dihedral types
+
+0.000000 0.000000 xlo xhi
+0.000000 0.000000 ylo yhi
+0.000000 0.000000 zlo zhi
+
+Atoms
+
+ 1 1 9  0 -7.111 0.579 0.000
+ 2 1 14 0 -8.102 0.579 0.000 
+
+Bonds
+ 
+ 1 18 1 2
+ 

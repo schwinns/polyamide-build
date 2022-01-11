@@ -271,8 +271,14 @@ for b in bonds:
         uncrosslink = b0
     
 
-# Angle and dihedral types to change
+# Bond, angle, and dihedral types to change
 to_change = {
+    'bonds'  : {
+        '11' : '17', # LC-O --> CT-O
+        '10' : '16', # LC-CA --> CT-CA
+        '13' : '9', # LN-HN --> NH-HN
+        '12' : '8', # LN-CA --> NH-CA
+    },
     'angles' : {
         '15' : '22', # CA-LC-O  --> CA-CT-O
         '16' : '23', # CA-CA-LC --> CA-CA-CT
@@ -291,7 +297,7 @@ to_change = {
     }
 }
 
-# Mark the angles and dihedrals that should be deleted/changed in final lmps file
+# Mark the bonds, angles, and dihedrals that should be deleted/changed in final lmps file
 for bond in bonds:
 
     if bonds[bond]['delete']:
@@ -311,6 +317,13 @@ for bond in bonds:
             atoms[NH]['type'] = '8'
             atoms[CT]['type'] = '12'
        
+        for b in bonds:
+            if b != bond:
+                if CT in bonds[b]['atoms'] or NH in bonds[b]['atoms']:
+                    old_type = bonds[b]['type']
+                    new_type = to_change['bonds'][old_type]
+                    bonds[b]['type'] = new_type
+
 
         for angle in angles:
             if CT in angles[angle]['atoms'] and NH in angles[angle]['atoms']: # both in the angle, delete
@@ -328,6 +341,8 @@ for bond in bonds:
                 old_type = dihedrals[dih]['type']
                 new_type = to_change['dihedrals'][old_type]
                 dihedrals[dih]['type'] = new_type
+
+
 
 #######################################################################################
 ########### CREATE NEW ATOMS/BONDS/ANGLES/DIHEDRALS FOR TERMINATION GROUPS ############
@@ -402,18 +417,15 @@ for bond in bonds:
         HN = dict(atoms[LC])
         OH = dict(atoms[LN])
 
+        # print('Neighbors for atom %s before movement:' %(n_atoms+1))
+
         HN_neighbors = []
         for a in atoms:
-            sq_dist = np.dot(atoms[a]['coords'] - HN['coords'],atoms[a]['coords'] - HN['coords'])
+            dist = atoms[a]['coords'] - HN['coords']
+            sq_dist = dist[0]**2 + dist[1]**2 + dist[2]**2
             if np.sqrt(sq_dist) < 5: # less than 5 angstroms away, it is a neighbor
                 # print('Atom %s of type %s distance: %s' %(a, atoms[a]['type'], np.sqrt(sq_dist)))
                 HN_neighbors.append(a)
-
-        OH_neighbors = []
-        for a in atoms:
-            sq_dist = np.dot(atoms[a]['coords'] - OH['coords'],atoms[a]['coords'] - OH['coords'])
-            if np.sqrt(sq_dist) < 5: # less than 5 angstroms away, it is a neighbor
-                OH_neighbors.append(a)
 
         ####### HN ADDITION #######
         # Add HN to atoms
@@ -430,12 +442,23 @@ for bond in bonds:
             i += 1
             min_dist = 100
 
+            # Update the neighbors every 100 tries
+            if i % 100 == 0:
+                HN_neighbors = []
+                for a in atoms:
+                    dist = atoms[a]['coords'] - HN['coords']
+                    sq_dist = dist[0]**2 + dist[1]**2 + dist[2]**2
+                    if np.sqrt(sq_dist) < 5: # less than 5 angstroms away, it is a neighbor
+                        HN_neighbors.append(a)
+
             # check the distance from neighbors
             for a in HN_neighbors: 
-                sq_dist = np.dot(atoms[a]['coords'] - HN['coords'],atoms[a]['coords'] - HN['coords'])
+                dist = atoms[a]['coords'] - HN['coords']
+                sq_dist = dist[0]**2 + dist[1]**2 + dist[2]**2
                 
                 if min_dist > np.sqrt(sq_dist): # save the smallest distance between neighbors
                     min_dist = np.sqrt(sq_dist)
+                    nearest_neighbor = a
 
                 if min_dist < 2:
                     close = True
@@ -456,6 +479,7 @@ for bond in bonds:
                 break
 
             else:
+                # print('Placing atom %d at %s which is %.3f from nearest atom %s at %s' %(n_atoms+1, HN['coords'], min_dist, nearest_neighbor, atoms[nearest_neighbor]['coords']))
                 break
 
             if i == 5000:
@@ -509,6 +533,13 @@ for bond in bonds:
         }
 
         ####### OH ADDITION #######
+        OH_neighbors = []
+        for a in atoms:
+            dist = atoms[a]['coords'] - OH['coords']
+            sq_dist = dist[0]**2 + dist[1]**2 + dist[2]**2
+            if np.sqrt(sq_dist) < 5: # less than 5 angstroms away, it is a neighbor
+                OH_neighbors.append(a)
+
         OH['type'] = '7' # change type
         OH['bonded'] = [LC] # only bonded to broken LN
         OH['bonds'] = {str(n_bonds + 1) : LC}
@@ -520,6 +551,15 @@ for bond in bonds:
 
             i += 1
             min_dist = 100
+
+            # Update the neighbors every 100 tries
+            if i % 100 == 0:
+                OH_neighbors = []
+                for a in atoms:
+                    dist = atoms[a]['coords'] - OH['coords']
+                    sq_dist = dist[0]**2 + dist[1]**2 + dist[2]**2
+                    if np.sqrt(sq_dist) < 5: # less than 5 angstroms away, it is a neighbor
+                        OH_neighbors.append(a)
 
             # check the distance from neighbors
             for a in OH_neighbors: 
