@@ -132,6 +132,8 @@ thermo_style     custom step vol temp press etotal pe ke evdwl ecoul ebond eangl
 thermo           100
 
 # Minimization Step
+fix              walllo all wall/lj126 zlo EDGE 1.0 1.0 10.0
+fix              wallhi all wall/lj126 zhi EDGE 1.0 1.0 10.0
 min_style        sd
 minimize         1.0e-3 1.0e-3 1000 100000
 min_style        cg
