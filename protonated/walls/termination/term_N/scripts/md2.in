@@ -137,7 +137,7 @@ thermo           500
 # MD step
 fix             walllo all wall/lj126 zlo EDGE 0.1 1.0 10.0
 fix             wallhi all wall/lj126 zhi EDGE 0.1 1.0 10.0
-fix              1 all npt temp 300 300 100.0 x 1.0 1.0 100 y 1.0 1.0 100 z 1.0 1.0 100 couple xy
+fix              1 all npt temp 300 300 100.0 x 1.0 1.0 100 y 1.0 1.0 100 couple xy
 velocity         all create 300 58447419
 run              20000
 unfix            1

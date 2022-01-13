@@ -18,7 +18,7 @@ pair_modify     mix arithmetic
 kspace_style    pppm 1e-8
 
 # Data file input
-read_data        min.lmps
+read_data        min-long.lmps
 
 # Coefficients
 pair_coeff 1 1 0.0860000 3.3996695 # CA
@@ -142,21 +142,21 @@ thermo           500
 # MD step
 group water type 15 16
 fix              1 all nvt temp 300 300 100.0
-#fix              2 water shake 1e-6 200 0 b 19 a 24
+fix              2 water shake 1e-6 200 0 b 19 a 24
 velocity         all create 300 58531416
 run              10000
 unfix            1
-#unfix            2
+unfix            2
 
 # Data file output
 write_data       equil.lmps
 
 # MD step
 fix              3 all npt temp 300 300 100.0 x 1.0 1.0 1000 y 1.0 1.0 1000 z 1.0 1.0 1000 couple xy
-#fix              4 water shake 1e-6 200 0 b 19 a 24
+fix              4 water shake 1e-6 200 0 b 19 a 24
 run              10000
 unfix            3
-#unfix            4
+unfix            4
 
 # Data file output
 write_data       equil.lmps

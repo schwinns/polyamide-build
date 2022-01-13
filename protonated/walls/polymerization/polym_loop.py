@@ -50,7 +50,7 @@ import glob
 #
 
 # Parameters
-bonds = 0
+bonds = 466
 bonds_tot = 498
 bonds_cyc = 20
 md_cyc = 3
@@ -94,8 +94,8 @@ def polym_loop():
     polym_init()
 
     # Step 0
-    setup_step()
-    em()
+    # setup_step()
+    # em()
 
     # Steps 1-N
     while (bonds < bonds_tot):
