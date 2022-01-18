@@ -1,4 +1,4 @@
-log started: Mon Nov  8 15:29:06 2021
+log started: Fri Jan 14 11:46:12 2022
 
 Log file: ./leap.log
 >> #
@@ -358,7 +358,7 @@ Loading: TPF
 ----- Source: /Users/nate_schwindt/anaconda3/envs/LLC-env/dat/leap/cmd/leaprc.gaff
 ----- Source of /Users/nate_schwindt/anaconda3/envs/LLC-env/dat/leap/cmd/leaprc.gaff done
 >> logFile leap.log
-log started: Mon Nov  8 15:29:06 2021
+log started: Fri Jan 14 11:46:13 2022
 
 Log file: ./leap.log
 >> #
@@ -479,7 +479,7 @@ Building atom parameters.
 Checking Unit.
 
 /Users/nate_schwindt/anaconda3/envs/LLC-env/bin/teLeap: Warning!
-The unperturbed charge of the unit (-2.999000) is not zero.
+The unperturbed charge of the unit (0.998000) is not zero.
 
 /Users/nate_schwindt/anaconda3/envs/LLC-env/bin/teLeap: Note.
 Ignoring the warning from Unit Checking.

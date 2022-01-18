@@ -1,8 +1,8 @@
 ;
 ;   File TMC-T.top  was generated
 ;   By user: nate_schwindt (501)
-;   On host: cu-genvpn-comp-10.180.47.202.int.colorado.edu
-;   At date: Mon. November  1 15:27:24 2021
+;   On host: Nates-MacBook-Pro.local
+;   At date: Fri. January  5 11:54:13 2022
 ;
 ;   This is a standalone topology file
 ;
@@ -11,7 +11,7 @@
 ;   Executable:   parameterize.py
 ;   Library dir:  /usr/local/gromacs/share/gromacs/top
 ;   Command line:
-;     ../parameterize.py -p TMC-T.pdb -o TMC-T -m em.mdp -n -3
+;     parameterize.py -p TMC-T.pdb -o TMC-T -m em.mdp -n -1
 ;
 
 [ defaults ]
@@ -33,24 +33,24 @@ UNL          3
 
 [ atoms ]
 ;   nr       type  resnr residue  atom   cgnr    charge       mass  typeB    chargeB      massB
-; residue    1 UNL rtp UNL q -3.0
-    1         ca      1    UNL      C      1 -0.14600000  12.010000   ; qtot -0.146000
-    2         ca      1    UNL     C1      2 -0.11700000  12.010000   ; qtot -0.263000
-    3         ca      1    UNL     C2      3 -0.16250000  12.010000   ; qtot -0.425500
-    4         ca      1    UNL     C3      4 -0.11700000  12.010000   ; qtot -0.542500
-    5         ca      1    UNL     C4      5 -0.16250000  12.010000   ; qtot -0.705000
-    6         ca      1    UNL     C5      6 -0.12100000  12.010000   ; qtot -0.826000
-    7         ha      1    UNL      H      7 0.11900000   1.008000   ; qtot -0.707000
-    8         ha      1    UNL     H1      8 0.10000000   1.008000   ; qtot -0.607000
-    9         ha      1    UNL     H2      9 0.10000000   1.008000   ; qtot -0.507000
-   10         c2      1    UNL     C6     10 0.35550000  12.010000   ; qtot -0.151500
-   11         c1      1    UNL     C7     11 -0.15100000  12.010000   ; qtot -0.302500
-   12         c2      1    UNL     C8     12 0.35550000  12.010000   ; qtot 0.053000
-   13          o      1    UNL      O     13 -0.63150000  16.000000   ; qtot -0.578500
-   14          o      1    UNL     O1     14 -0.63150000  16.000000   ; qtot -1.210000
-   15          o      1    UNL     O2     15 -0.52600000  16.000000   ; qtot -1.736000
-   16          o      1    UNL     O3     16 -0.63150000  16.000000   ; qtot -2.367500
-   17          o      1    UNL     O4     17 -0.63150000  16.000000   ; qtot -2.999000
+; residue    1 UNL rtp UNL q -1.0
+    1         ca      1    UNL      C      1 0.11400000  12.010000   ; qtot 0.114000
+    2         ca      1    UNL     C1      2 -0.17800000  12.010000   ; qtot -0.064000
+    3         ca      1    UNL     C2      3 -0.00500000  12.010000   ; qtot -0.069000
+    4         ca      1    UNL     C3      4 -0.17800000  12.010000   ; qtot -0.247000
+    5         ca      1    UNL     C4      5 -0.00500000  12.010000   ; qtot -0.252000
+    6         ca      1    UNL     C5      6 -0.24300000  12.010000   ; qtot -0.495000
+    7         ha      1    UNL      H      7 0.21000000   1.008000   ; qtot -0.285000
+    8         ha      1    UNL     H1      8 0.17500000   1.008000   ; qtot -0.110000
+    9         ha      1    UNL     H2      9 0.17500000   1.008000   ; qtot 0.065000
+   10         c2      1    UNL     C6     10 0.36700000  12.010000   ; qtot 0.432000
+   11         c1      1    UNL     C7     11 0.41900000  12.010000   ; qtot 0.851000
+   12         c2      1    UNL     C8     12 0.36700000  12.010000   ; qtot 1.218000
+   13          o      1    UNL      O     13 -0.53650000  16.000000   ; qtot 0.681500
+   14          o      1    UNL     O1     14 -0.53650000  16.000000   ; qtot 0.145000
+   15          o      1    UNL     O2     15 -0.07400000  16.000000   ; qtot 0.071000
+   16          o      1    UNL     O3     16 -0.53650000  16.000000   ; qtot -0.465500
+   17          o      1    UNL     O4     17 -0.53650000  16.000000   ; qtot -1.002000
 
 [ bonds ]
 ;    ai     aj funct         c0         c1         c2         c3
