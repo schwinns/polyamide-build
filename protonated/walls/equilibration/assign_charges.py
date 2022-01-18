@@ -254,7 +254,7 @@ for atom in atoms:
 
         n_NH = check_N(atom, atoms_top=atoms)
         if n_NH == 1: # MPD-T
-            charges[atom] = -0.7464
+            charges[atom] = -0.7444
         elif n_NH == 0: # MPD-L
             charges[atom] = -0.575
     
@@ -288,11 +288,11 @@ for atom in atoms:
 
         n_CT = check_C(atom, atoms_top=atoms)
         if n_CT == 0: # TMC-C
-            charges[atom] = 0.457
+            charges[atom] = 0.456
         elif n_CT == 1: # TMC-L
             charges[atom] = 0.473
         elif n_CT == 2: # TMC-T
-            charges[atom] = 0.477
+            charges[atom] = 0.478
 
     elif atoms[atom]['type'] == '4': # O
 

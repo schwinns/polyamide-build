@@ -34,7 +34,7 @@ UNL          3
 [ atoms ]
 ;   nr       type  resnr residue  atom   cgnr    charge       mass  typeB    chargeB      massB
 ; residue    1 UNL rtp UNL q -1.0
-    1         n2      1    UNL      N      1 -0.74640000  14.010000   ; qtot -0.746400
+    1         n2      1    UNL      N      1 -0.74440000  14.010000   ; qtot -0.746400
     2         ca      1    UNL      C      2 -0.36600000  12.010000   ; qtot -1.112400
     3         ca      1    UNL     C1      3 0.21160000  12.010000   ; qtot -0.900800
     4         ca      1    UNL     C2      4 -0.03400000  12.010000   ; qtot -0.934800
