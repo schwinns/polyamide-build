@@ -8,7 +8,7 @@
 #SBATCH --mail-user=nasc4134@colorado.edu
 
 module load intel/20.4
-module load intelmpi/20.4-intel20.4
+module load intelmpi
 module load LAMMPS/29Oct20-intel
 source /jet/home/schwinns/.bashrc
 conda activate py2

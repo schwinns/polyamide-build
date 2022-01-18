@@ -1,4 +1,4 @@
-log started: Thu Nov 11 14:17:48 2021
+log started: Fri Jan 14 09:56:18 2022
 
 Log file: ./leap.log
 >> #
@@ -358,7 +358,7 @@ Loading: TPF
 ----- Source: /Users/nate_schwindt/anaconda3/envs/LLC-env/dat/leap/cmd/leaprc.gaff
 ----- Source of /Users/nate_schwindt/anaconda3/envs/LLC-env/dat/leap/cmd/leaprc.gaff done
 >> logFile leap.log
-log started: Thu Nov 11 14:17:48 2021
+log started: Fri Jan 14 09:56:18 2022
 
 Log file: ./leap.log
 >> #
@@ -477,6 +477,13 @@ Building topology.
 Building atom parameters.
 > saveamberparm SUS MPD-L.prmtop MPD-L.inpcrd
 Checking Unit.
+
+/Users/nate_schwindt/anaconda3/envs/LLC-env/bin/teLeap: Warning!
+The unperturbed charge of the unit (-2.000000) is not zero.
+
+/Users/nate_schwindt/anaconda3/envs/LLC-env/bin/teLeap: Note.
+Ignoring the warning from Unit Checking.
+
 Building topology.
 Building atom parameters.
 Building bond parameters.
@@ -499,4 +506,4 @@ Marking per-residue atom chain types.
  quit
 	Quit
 
-Exiting LEaP: Errors = 0; Warnings = 0; Notes = 0.
+Exiting LEaP: Errors = 0; Warnings = 1; Notes = 1.

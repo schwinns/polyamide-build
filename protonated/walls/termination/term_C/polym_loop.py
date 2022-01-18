@@ -51,9 +51,9 @@ import glob
 
 # Parameters
 bonds = 0
-bonds_tot = 3
+bonds_tot = 1
 bonds_cyc = 1
-md_cyc = 3
+md_cyc = 1
 md_max = 100
 keep = 0
 

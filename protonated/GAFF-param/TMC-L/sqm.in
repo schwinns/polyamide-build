@@ -1,7 +1,7 @@
 Run semi-empirical minimization
  &qmmm
     qm_theory='AM1', grms_tol=0.0005,
- scfconv=1.d-10, ndiis_attempts=700,   qmcharge=0,
+ scfconv=1.d-10, ndiis_attempts=700,   qmcharge=2,
  /
    6     C       -8.6950        2.5270       -0.0490 
    6    C1       -7.4430        3.1540       -0.0060 

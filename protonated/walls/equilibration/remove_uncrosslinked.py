@@ -26,6 +26,7 @@ for line in f:
         out.write(line)
 
 # Atoms section
+vel = False
 i = 1
 unxlink_N = 0; unxlink_C = 0
 xlink_N = 0; xlink_C = 0
@@ -35,7 +36,12 @@ delete_id = []
 for line in f:
 
     if line.startswith('Bonds'): # go to Bonds section
+        vel = False
         out.write(line)
+        break
+
+    elif line.startswith('Velocities'):
+        vel = True
         break
 
     elif len(line.split()) > 0: # if line is not blank
@@ -82,6 +88,13 @@ print('Degree of crosslinking is %.3f\n' %(xlink_N / (xlink_N + unxlink_N + term
 
 print('Removing %d atoms from %s' %(len(delete_id), args.lmps))
 print('%s has %d atoms' %(args.output, i-1))
+
+# Velocities section
+if vel:
+    for line in f:
+        if line.startswith('Bonds'):
+            out.write(line)
+            break
 
 # Bonds section
 i = 1

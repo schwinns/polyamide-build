@@ -1,15 +1,15 @@
 ;
 ;	File 'mdout.mdp' was generated
 ;	By user: nate_schwindt (501)
-;	On host: cu-genvpn-comp-10.180.15.99.int.colorado.edu
-;	At date: Thu Nov 11 14:22:52 2021
+;	On host: Nates-MacBook-Pro.local
+;	At date: Fri Jan 14 10:37:50 2022
 ;
 ;	Created by:
 ;	                     :-) GROMACS - gmx grompp, 2020.5 (-:
 ;	
 ;	Executable:   /usr/local/gromacs/bin/gmx
 ;	Data prefix:  /usr/local/gromacs
-;	Working dir:  /Users/nate_schwindt/Projects/polymer_membrane/Polymatic/lin_xlink/GAFF-param/protonated/TMC-L
+;	Working dir:  /Users/nate_schwindt/Projects/polymer_membrane/Polymatic/lin_xlink/protonated/GAFF-param/TMC-L
 ;	Command line:
 ;	  gmx grompp -f em.mdp -c box.gro -p TMC-L.top -o em
 

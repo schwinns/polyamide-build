@@ -48,7 +48,8 @@
 ################################################################################
 
 use strict;
-use lib '/jet/home/schwinns/pkgs/polymatic_v1.1';
+# use lib '/jet/home/schwinns/pkgs/polymatic_v1.1';
+use lib '/Users/nate_schwindt/pkgs/polymatic_v1.1';
 use Polymatic();
 use Math::Trig();
 use POSIX();
