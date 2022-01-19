@@ -132,6 +132,8 @@ for line in f:
 
 # Create dictionaries with full topology
 atoms = {}
+atom_ids = {} # atom_ods[old_id] = new_id
+i = 0
 for line in f: # build dictionary of all atoms
 
     if line.startswith('Velocities'): # end of atoms section
@@ -152,6 +154,9 @@ for line in f: # build dictionary of all atoms
         x = float(l[4])
         y = float(l[5])
         z = float(l[6])
+
+        i += 1
+        atom_ids[a_id] = i
 
         atoms[a_id] = {
             'molecule' : mol_id,
@@ -537,7 +542,9 @@ for line in f:
         y = l[5]
         z = l[6]
 
-        new_line = " %s %s %s %.4f %s %s %s\n" %(a_id,mol_id,a_type,charge,x,y,z)
+        new_id = atom_ids[a_id]
+
+        new_line = " %s %s %s %.4f %s %s %s\n" %(new_id,mol_id,a_type,charge,x,y,z)
         out.write(new_line)
 
     else: # write blank lines
@@ -550,9 +557,79 @@ if vel:
             out.write(line)
             break
 
-# Write all other sections unchanged
+# Bonds section (reordering the atom numbers)
 for line in f:
-    out.write(line)
+
+    if line.startswith('Angles'):
+        out.write(line)
+        break
+
+    elif len(line.split()) > 0:
+
+        l = line.split()
+        b_id = l[0]
+        b_type = l[1]
+        a1_old = l[2]
+        a2_old = l[3]
+
+        a1 = atom_ids[a1_old]
+        a2 = atom_ids[a2_old]
+
+        new_line = '%s %s %s %s\n' %(b_id, b_type, a1, a2)
+        out.write(new_line)
+
+    else:
+        out.write(line)
+
+# Angles section
+for line in f:
+
+    if line.startswith('Dihedrals'):
+        out.write(line)
+        break
+
+    elif len(line.split()) > 0:
+
+        l = line.split()
+        ang_id = l[0]
+        ang_type = l[1]
+        a1_old = l[2]
+        a2_old = l[3]
+        a3_old = l[4]
+
+        a1 = atom_ids[a1_old]
+        a2 = atom_ids[a2_old]
+        a3 = atom_ids[a3_old]
+
+        new_line = '%s %s %s %s %s\n' %(ang_id, ang_type, a1, a2, a3)
+        out.write(new_line)
+
+    else:
+        out.write(line)
+
+# Dihedrals section
+for line in f:
+
+    if len(line.split()) > 0:
+
+        l = line.split()
+        dih_id = l[0]
+        dih_type = l[1]
+        a1_old = l[2]
+        a2_old = l[3]
+        a3_old = l[4]
+        a4_old = l[5]
+
+        a1 = atom_ids[a1_old]
+        a2 = atom_ids[a2_old]
+        a3 = atom_ids[a3_old]
+        a4 = atom_ids[a4_old]
+
+        new_line = '%s %s %s %s %s %s\n' %(dih_id, dih_type, a1, a2, a3, a4)
+        out.write(new_line)
+
+    else:
+        out.write(line)
 
 #############################################################################################
 ####################################### QUICK CHECKS ########################################
