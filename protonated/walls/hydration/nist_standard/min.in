@@ -1,4 +1,4 @@
-# Molecular dynamics NVT script with class2 ff for simulated polymerization
+# Energy minimization script with class2 ff for simulated polymerization
 
 # System
 units            real
@@ -18,7 +18,7 @@ pair_modify     mix arithmetic
 kspace_style    pppm 1e-8
 
 # Data file input
-read_data        min.lmps
+read_data        spce.lmps
 
 # Coefficients
 pair_coeff 1 1 0.0860000 3.3996695 # CA
@@ -35,9 +35,8 @@ pair_coeff 11 11 0.1700000 3.2499985 # LN
 pair_coeff 12 12 0.0860000 3.3996695 # CT
 pair_coeff 13 13 0.0157000 1.0690785 # H
 pair_coeff 14 14 0.2104000 3.0664734 # OR
-pair_coeff 15 15 0.1020000 3.1880000 # OW
-pair_coeff 16 16 0.0000000 0.0000000 # HW
-pair_coeff 15 16 0.0000000 0.0000000 # OW-HW
+pair_coeff 15 15 0.1020000 3.1880000 # OW    <----
+pair_coeff 16 16 0.0000000 0.0000000 # HW    <----
 
 bond_coeff 1  harmonic    4.61100000e+02    1.39840000e+00 # CA-CA
 bond_coeff 2  harmonic    3.45900000e+02    1.49060000e+00 # CA-C
@@ -57,7 +56,7 @@ bond_coeff 15 harmonic    3.71400000e+02    9.73000000e-01 # OH-HO
 bond_coeff 16 harmonic    3.45900000e+02    1.49060000e+00 # CA-CT
 bond_coeff 17 harmonic    6.37700000e+02    1.21830000e+00 # CT-O
 bond_coeff 18 harmonic    3.71400000e+02    9.73000000e-01 # OR-HO
-bond_coeff 19 harmonic    4.50000000e+02    9.57200000e-01 # OW-HW
+bond_coeff 19 harmonic    4.50000000e+02    9.57200000e-01 # OW-HW   <-----
 
 angle_coeff 1  harmonic    6.66000000e+01    1.20020052e+02 # CA-CA-CA
 angle_coeff 2  harmonic    4.82000000e+01    1.19880051e+02 # CA-CA-HA
@@ -71,7 +70,7 @@ angle_coeff 9  harmonic    6.79000000e+01    1.20190052e+02 # N-CA-CA
 angle_coeff 10 harmonic    4.76000000e+01    1.16000050e+02 # CA-N-HN
 angle_coeff 11 harmonic    6.83000000e+01    1.20950052e+02 # CA-CA-NH
 angle_coeff 12 harmonic    4.84000000e+01    1.16070050e+02 # CA-NH-HN
-angle_coeff 13 harmonic    7.79000000e+01    1.30250056e+02 # O-C-O (does not exist in protonated monomers)
+angle_coeff 13 harmonic    7.79000000e+01    1.30250056e+02 # O-C-O 
 angle_coeff 14 harmonic    4.01000000e+01    1.15120050e+02 # HN-NH-HN
 angle_coeff 15 harmonic    6.87000000e+01    1.22600053e+02 # CA-LC-O
 angle_coeff 16 harmonic    6.43000000e+01    1.20330052e+02 # CA-CA-LC
@@ -82,7 +81,7 @@ angle_coeff 20 harmonic    4.99000000e+01    1.06550046e+02 # CT-OH-HO
 angle_coeff 21 harmonic    7.59000000e+01    1.22100052e+02 # O-CT-OH
 angle_coeff 22 harmonic    6.87000000e+01    1.22600053e+02 # CA-CT-O
 angle_coeff 23 harmonic    6.43000000e+01    1.20330052e+02 # CA-CA-CT
-angle_coeff 24 harmonic    5.50000000e+01    1.04520000e+02 # HW-OW-HW
+angle_coeff 24 harmonic    5.50000000e+01    1.04520000e+02 # HW-OW-HW  <----
 
 dihedral_coeff 1  charmm    3.62500000e+00         2       180         0 # CA-CA-CA-CA
 dihedral_coeff 2  charmm    1.10000000e+00         2       180         0 # CA-CA-CA-HA (improper)
@@ -136,26 +135,9 @@ run_style        verlet
 
 # Output
 thermo_style     custom step vol temp press etotal pe ke evdwl ecoul ebond eangle edihed eimp
-thermo           500
+thermo           100
 
-# MD step
-group water type 15 16
-fix              1 all nvt temp 300 300 100.0
-fix              2 water shake 1e-6 200 0 b 19 a 24
-velocity         all create 300 58531416
-run              10000
-unfix            1
-unfix            2
-
-# Data file output
-write_data       equil.lmps
-
-# MD step
-fix              3 all npt temp 300 300 100.0 x 1.0 1.0 1000 y 1.0 1.0 1000 z 1.0 1.0 1000 couple xy
-fix              4 water shake 1e-6 200 0 b 19 a 24
-run              10000
-unfix            3
-unfix            4
-
-# Data file output
-write_data       equil.lmps
+# Minimization Step
+min_style        sd
+minimize         0.0 1.0e-4 1000 10000
+write_data       min.lmps

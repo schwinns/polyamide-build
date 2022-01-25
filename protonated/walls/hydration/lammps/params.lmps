@@ -32,7 +32,7 @@ Masses # id, mass [g/mol]
  12 12.0100000 # CT (terminated carbon on carboxyl group)
  13  1.0080000 # H (free hydrogen for termination)
  14 16.0000000 # OR (reactive oxygen in free hydroxyl)
- 15 15.9994000 # OW (oxygen in water)
+ 15 16.0000000 # OW (oxygen in water)
  16  1.0080000 # HW (hydrogen in water)
 
 
@@ -54,6 +54,9 @@ Pair Coeffs # id, epsilon [kcal/mol], sigma [Angstroms]
  14 0.2104000 3.0664734 # OR
  15 0.1020000 3.1880000 # OW
  16 0.0000000 0.0000000 # HW
+
+ 15 0.1521 3.157 # OW from Coronell paper (q = -0.83)
+ 16 0.0150 2.058 # HW from Coronell paper (q = 0.415)
 
 
 Bond Coeffs # id, K [kcal/mol/Ang^2], r0 [Ang]
@@ -77,6 +80,8 @@ Bond Coeffs # id, K [kcal/mol/Ang^2], r0 [Ang]
  17 harmonic    6.37700000e+02    1.21830000e+00 # CT-O
  18 harmonic    3.71400000e+02    9.73000000e-01 # OR-HO
  19 harmonic    4.50000000e+02    9.57200000e-01 # OW-HW
+
+ 19 harmonic 450 0.9572 # OW-HW from Coronell paper
 
 
 Angle Coeffs # id, K [kcal/mol/rad^2], theta0 [degrees], K_UB [kcal/mol/Ang^2], r_UB [Ang]
@@ -105,6 +110,8 @@ Angle Coeffs # id, K [kcal/mol/rad^2], theta0 [degrees], K_UB [kcal/mol/Ang^2], 
  22 harmonic    6.87000000e+01    1.22600053e+02 # CA-CT-O
  23 harmonic    6.43000000e+01    1.20330052e+02 # CA-CA-CT
  24 harmonic    5.50000000e+01    1.04520000e+02 # HW-OW-HW
+
+ 24 harmonic 55 104.52 # HW-OW-HW from Coronell paper
 
 Dihedral Coeffs # id, K [kcal/mol], n, d [degrees], weighting factor for 1-4 interactions
 
