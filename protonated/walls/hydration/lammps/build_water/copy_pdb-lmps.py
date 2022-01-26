@@ -18,10 +18,6 @@ pdb = open(args.pdb, 'r')
 lmp = open(args.lmps, 'r')
 out = open(args.output, 'w')
 
-# Dimensions of the membrane to fill reservoirs
-x_min = 0
-x_max = 33.51054657321081 + 0.02645
-
 # Write all the parameters and header from lammps file
 for line in lmp:
 
@@ -65,7 +61,50 @@ mins = [100,100,100]
 n_atoms = 0
 for line in pdb:
 
-    if line.startswith('ATOM') and line.split()[3] == 'MOL': # write coordinates for the PA membrane and free OH's and H's
+    if line.startswith('CONECT'):
+        break
+    
+    elif not line.startswith('ATOM'):
+        pass
+
+    elif '15' == line.split()[2] or '16' == line.split()[2]: # write coordinates of water molecules (OW)
+
+        l = line.split()
+        a_id = l[1]
+        a_type = l[2]
+        mol_id = n_mol + n_waters # using last mol_id from PA section
+        x = l[5]
+        y = l[6]
+        z = l[7]
+
+        xyz = [float(x),float(y),float(z)]
+        for d in range(len(xyz)):
+            if xyz[d] > maxes[d]:
+                maxes[d] = xyz[d]
+            elif xyz[d] < mins[d]:
+                mins[d] = xyz[d]
+
+        n_atoms += 1
+
+        # Assign types and charges for water molecules, create dictionary of water molecules 
+        if a_type == '15':
+            waters[n_waters] = [n_atoms]
+            charge = '-0.830'
+        elif a_type == '16':
+            waters[n_waters].append(n_atoms)
+            charge = '0.415'
+        else:
+            print('Bad atom type: %s' %(a_type))
+            print(line)
+            exit()
+        
+        if len(waters[n_waters]) == 3:
+            n_waters += 1
+
+        new_line = " %s %s %s %s %s %s %s\n" %(n_atoms, mol_id, a_type, charge, x, y, z)
+        out.write(new_line)
+
+    elif line.startswith('ATOM'): # write coordinates for the PA membrane and free OH's and H's
 
         l = line.split()
         a_id = l[1]
@@ -83,89 +122,11 @@ for line in pdb:
             elif xyz[d] < mins[d]:
                 mins[d] = xyz[d]
 
-        if x >
-
         n_atoms += 1
 
         new_line = " %d %s %s %s %s %s %s\n" %(n_atoms, mol_id, a_type, charge, x, y, z)
         out.write(new_line)
         n_mol = int(mol_id)
-
-    elif line.startswith('ATOM') and len(line.split()) > 10: # write coordinates of water molecules
-
-        l = line.split()
-        a_id = l[1]
-        a_type = l[2]
-        mol_id = n_mol + n_waters # using last mol_id from PA section
-        x = l[6]
-        y = l[7]
-        z = l[8]
-
-        xyz = [float(x),float(y),float(z)]
-        for d in range(len(xyz)):
-            if xyz[d] > maxes[d]:
-                maxes[d] = xyz[d]
-            elif xyz[d] < mins[d]:
-                mins[d] = xyz[d]
-
-        n_atoms += 1
-
-        # Assign types and charges for water molecules, create dictionary of water molecules
-        if a_type == 'OW':
-            waters[n_waters] = [n_atoms]
-            a_type = '15'
-            charge = '-0.830'
-        elif a_type == 'HW':
-            waters[n_waters].append(n_atoms)
-            a_type = '16'
-            charge = '0.415'
-        else:
-            print('Bad atom type: %s' %(a_type))
-            exit()
-        
-        if len(waters[n_waters]) == 3:
-            n_waters += 1
-
-        new_line = " %s %s %s %s %s %s %s\n" %(n_atoms, mol_id, a_type, charge, x, y, z)
-        out.write(new_line)
-
-    elif line.startswith('ATOM'): # write coordinates of water molecules where molecule number touches A/B
-
-        l = line.split()
-        a_id = l[1]
-        a_type = l[2]
-        mol_id = n_mol + n_waters # using last mol_id from PA section
-        x = l[5]
-        y = l[6]
-        z = l[7]
-
-        xyz = [float(x),float(y),float(z)]
-        for d in range(len(xyz)):
-            if xyz[d] > maxes[d]:
-                maxes[d] = xyz[d]
-            elif xyz[d] < mins[d]:
-                mins[d] = xyz[d]
-
-        n_atoms += 1
-
-        # Assign types and charges for water molecules, create dictionary of water molecules
-        if a_type == 'OW':
-            waters[n_waters] = [n_atoms]
-            a_type = '15'
-            charge = '-0.830'
-        elif a_type == 'HW':
-            waters[n_waters].append(n_atoms)
-            a_type = '16'
-            charge = '0.415'
-        else:
-            print('Bad atom type: %s' %(a_type))
-            exit()
-        
-        if len(waters[n_waters]) == 3:
-            n_waters += 1
-
-        new_line = " %s %s %s %s %s %s %s\n" %(n_atoms, mol_id, a_type, charge, x, y, z)
-        out.write(new_line)
         
 print('%d waters in the system\n' %(n_waters-1))
 print('Box dimensions should be:')

@@ -1,0 +1,56 @@
+
+################################################################################
+
+ PACKMOL - Packing optimization for the automated generation of
+ starting configurations for molecular dynamics simulations.
+ 
+                                                              Version 20.2.2 
+
+################################################################################
+
+  Packmol must be run with: packmol < inputfile.inp 
+
+  Userguide at: http://m3g.iqm.unicamp.br/packmol 
+
+  Reading input file... (Control-C aborts)
+  Seed for random number generator:        10000
+  Output file: packed.pdb
+  Reading coordinate file: post_equil.pdb
+  Reading coordinate file: final.pdb
+  Reading coordinate file: final.pdb
+  Number of independent structures:            3
+  The structures are: 
+  Structure            1 :post_equil.pdb(        6693  atoms)
+  Structure            2 :final.pdb(        4500  atoms)
+  Structure            3 :final.pdb(        4500  atoms)
+  Maximum number of GENCAN loops for all molecule packing:          200
+  Maximum number of GENCAN loops-0 for all molecule packing:         1000
+  Total number of restrictions:            3
+  Distance tolerance:    2.0000000000000000     
+  Warning: Type of residue numbering not set for structure            1
+  Residue numbering set for structure            1 :           0
+  Swap chains of molecules of structure            1 : F
+  Warning: Type of residue numbering not set for structure            2
+  Residue numbering set for structure            2 :           1
+  Swap chains of molecules of structure            2 : F
+  Warning: Type of residue numbering not set for structure            3
+  Residue numbering set for structure            3 :           1
+  Swap chains of molecules of structure            3 : F
+  Number of molecules of type            1 :            1
+  Number of molecules of type            2 :            1
+  Number of molecules of type            3 :            1
+  Total number of atoms:        15693
+  Molecule post_equil.pdb(           1 ) will be fixed.
+  Molecule final.pdb(           2 ) will be fixed.
+  Molecule final.pdb(           3 ) will be fixed.
+  Total number of molecules:            3
+  Number of fixed molecules:            3
+  Number of free molecules:            0
+  Number of variables:            0
+  Total number of fixed atoms:        15693
+--------------------------------------------------------------------------------
+  There are only fixed molecules, therefore there is nothing to do. 
+  The output file contains the fixed molecules in the desired positions. 
+--------------------------------------------------------------------------------
+  Wrote output file: packed.pdb
+--------------------------------------------------------------------------------
