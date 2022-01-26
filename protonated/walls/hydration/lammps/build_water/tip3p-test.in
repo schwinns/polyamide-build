@@ -15,7 +15,8 @@ pair_modify     tail yes
 pair_modify     mix arithmetic
 kspace_style    pppm 1e-8
 
-read_data tip3p.lmps
+#read_data tip3p.lmps
+read_data ../min.lmps
 
 # Coefficients
 pair_coeff 1 1 0.0860000 3.3996695 # CA
@@ -34,7 +35,6 @@ pair_coeff 13 13 0.0157000 1.0690785 # H
 pair_coeff 14 14 0.2104000 3.0664734 # OR
 pair_coeff 15 15 0.1521000 3.1570000 # OW
 pair_coeff 16 16 0.0150000 2.0580000 # HW
-
 
 bond_coeff 1  harmonic    4.61100000e+02    1.39840000e+00 # CA-CA
 bond_coeff 2  harmonic    3.45900000e+02    1.49060000e+00 # CA-C
@@ -129,14 +129,14 @@ thermo_style     custom step vol temp press etotal pe ke evdwl ecoul ebond eangl
 thermo           100
 
 # Minimization
-min_style        sd
-minimize         0.0 1.0e-2 200 200
-write_data       min.lmps
+#min_style        sd
+#minimize         0.0 1.0e-2 200 200
+#write_data       min.lmps
 
-min_style        cg
-min_modify       line quadratic
-minimize         0.0 1.0e-2 200 200
-write_data       min.lmps
+#min_style        cg
+#min_modify       line quadratic
+#minimize         0.0 1.0e-2 200 200
+#write_data       min.lmps
 
 # Equilibration
 timestep         2.0
@@ -144,11 +144,4 @@ fix		         1 all nvt temp 300.0 300.0 100.0
 fix              2 all rattle 1.0e-6 200 0 b 19 a 24
 velocity         all create 300.0 6244325
 run              500
-write_data       equil.lmps
-
-# Full MD Steps
-thermo_style     custom step vol temp press etotal pe ke evdwl ecoul ebond eangle edihed eimp
-thermo           1000
-
-run              100000
-write_data       final.lmps
+write_data       equil-test.lmps

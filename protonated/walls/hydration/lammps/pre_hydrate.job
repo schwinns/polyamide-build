@@ -7,7 +7,6 @@
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=nasc4134@colorado.edu
 
-module load intel/20.4
 module load intelmpi
 module load LAMMPS/29Oct20-intel
 

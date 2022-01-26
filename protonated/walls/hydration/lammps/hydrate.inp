@@ -3,9 +3,9 @@
 #
 
 # Every atom from diferent molecules will be far from each other at
-# least 3.0 Anstrons at the solution.
+# least 2.0 Anstrons at the solution.
 
-tolerance 3.0
+tolerance 2.0
 
 # CHANGING THE INITIAL RANDOM SEED
 
@@ -26,7 +26,7 @@ filetype pdb
 
 # The output pdb file
 
-output hydrated_initial.pdb
+output packed.pdb
 
 # The first three numbers are the minimum x, y, z coordinates for this
 # molecules, the last three are maximum coordinates. The box defined
@@ -40,14 +40,14 @@ structure post_equil.pdb
   fixed 0. 0. 0. 0. 0. 0.
 end structure
 
-# WATER BOTTOM LAYER (30 Ang in z from zlo-30 to 3)
+# WATER BOTTOM LAYER (40 Ang in z from zlo-40 to zlo)
 structure HOH.pdb
-  number 300
-  inside box 15.744726713394513 15.744726713394513 -30.195824 49.25527328660532 49.25527328660532 3
+  number 1500
+  inside box 15.744726713394513 15.744726713394513 -40.195824 49.25527328660532 49.25527328660532 -0.195824
 end structure
 
-# WATER TOP LAYER (65 to zhi+30)
+# WATER TOP LAYER (zhi to zhi+40)
 structure HOH.pdb
-  number 300
-  inside box 15.744726713394513 15.744726713394513 65 49.25527328660532 49.25527328660532 98.165387
+  number 1500
+  inside box 15.744726713394513 15.744726713394513 68.165387 49.25527328660532 49.25527328660532 108.165387
 end structure
