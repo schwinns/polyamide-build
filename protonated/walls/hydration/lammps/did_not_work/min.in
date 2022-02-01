@@ -1,4 +1,4 @@
-# Molecular dynamics NVT script with class2 ff for simulated polymerization
+# Energy minimization script with class2 ff for simulated polymerization
 
 # System
 units            real
@@ -19,7 +19,7 @@ pair_modify     mix arithmetic
 kspace_style    pppm 1e-8
 
 # Data file input
-read_data        min.lmps
+read_data        hydrated_initial.lmps
 
 # Coefficients
 pair_coeff 1 1 0.0860000 3.3996695 # CA
@@ -136,27 +136,14 @@ run_style        verlet
 
 # Output
 thermo_style     custom step vol temp press etotal pe ke evdwl ecoul ebond eangle edihed eimp
-thermo           1000
+thermo           100
 
-##### FINAL VERSION BELOW #####
-# MD step
-group            water type 15 16
-fix              1 all nvt temp 300 300 100.0
-fix              2 water rattle 1e-6 200 1000 b 19 a 24
-velocity         all create 300 58531416
-run              50000 # 100 ps
-unfix            1
-unfix            2
+# Minimization Step
+min_style        sd
+minimize         0.0 1.0e-4 1000 10000
+write_data       min.lmps
 
-# Data file output
-write_data       equil.lmps
-
-# MD step
-fix              3 all npt temp 300 300 100.0 x 1.0 1.0 1000 y 1.0 1.0 1000 z 1.0 1.0 1000 couple xy
-fix              4 water rattle 1e-6 200 0 b 19 a 24
-run              50000 # 100 ps
-unfix            3
-unfix            4
-
-# Data file output
-write_data       equil.lmps
+min_style        cg
+min_modify       line quadratic
+minimize         0.0 1.0e-5 1000 10000
+write_data       min.lmps

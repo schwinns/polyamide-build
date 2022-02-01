@@ -136,7 +136,7 @@ run_style        verlet
 
 # Output
 thermo_style     custom step vol temp press etotal pe ke evdwl ecoul ebond eangle edihed eimp
-thermo           100
+thermo           1000
 
 # Minimization Step
 min_style        sd
