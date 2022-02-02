@@ -398,7 +398,12 @@ for bond in bonds: # write water bonds with new atom numbers for BOTTOM RESERVOI
     a1_old = bonds[bond]['atoms'][0] 
     a2_old = bonds[bond]['atoms'][1]
 
-    if not atoms[a1_old]['delete'] and not atoms[a2_old]['delete']:
+    if atoms[a1_old]['type'] == '15':
+        OW = a1_old
+    elif atoms[a2_old]['type'] == '15':
+        OW = a2_old
+
+    if not atoms[OW]['delete']:
 
         b += 1
 
@@ -441,7 +446,14 @@ for angle in angles: # write water angles with new atom numbers for BOTTOM RESER
     a2_old = angles[angle]['atoms'][1]
     a3_old = angles[angle]['atoms'][2]
 
-    if not atoms[a1_old]['delete'] and not atoms[a2_old]['delete'] and not atoms[a3_old]['delete']:
+    if atoms[a1_old]['type'] == '15':
+        OW = a1_old
+    elif atoms[a2_old]['type'] == '15':
+        OW = a2_old
+    else:
+        OW = a3_old
+
+    if not atoms[OW]['delete']:
 
         ang += 1
 
