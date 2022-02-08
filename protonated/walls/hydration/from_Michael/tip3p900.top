@@ -1,0 +1,9 @@
+#include "tip3p.itp"
+
+[ system ]
+; Name
+TIP3P water
+
+[ molecules ]
+; Compound        #mols
+SOL               900

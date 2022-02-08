@@ -13,7 +13,7 @@ special_bonds   lj 1.0e-100 1.0e-100 0.5 coul 1.0e-100 1.0e-100 0.83333333
 pair_style      lj/cut/coul/long 10.0 12.0
 pair_modify     tail yes
 pair_modify     mix arithmetic
-kspace_style    pppm 1e-8
+kspace_style    pppm/disp 1e-8
 
 #read_data tip3p.lmps
 read_data final.lmps
@@ -148,7 +148,7 @@ timestep         2.0
 #write_data       equil.lmps
 
 # Full MD Steps
-thermo_style     custom step vol temp press etotal pe ke evdwl ecoul ebond eangle edihed eimp
+thermo_style     custom step vol temp press density etotal pe ke evdwl ecoul ebond eangle edihed eimp
 thermo           1000
 
 #run              100000
@@ -156,5 +156,5 @@ thermo           1000
 
 fix              3 all npt temp 300 300 100.0 x 1.0 1.0 1000 y 1.0 1.0 1000 z 1.0 1.0 1000 couple xyz
 fix              4 all rattle 1.0e-6 200 0 b 19 a 24
-run              100000
+run              10000
 write_data       npt.lmps

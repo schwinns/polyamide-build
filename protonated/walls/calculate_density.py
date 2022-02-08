@@ -35,15 +35,19 @@ for line in f:
 masses = {}
 for line in f:
 
+    l = line.split('#')[0]
+
     if line.startswith('Atoms'):
         break
 
-    elif len(line.split()) == 2:
+    elif line.startswith('Pair Coeffs'):
+        pass
+
+    elif len(l.split()) == 2:
         a_type = line.split()[0]
         mass = float(line.split()[1])
 
         masses[a_type] = mass
-
 
 # Atoms section
 total_mass = 0
@@ -82,7 +86,7 @@ f.close()
 ####################################### QUICK CHECKS ########################################
 #############################################################################################
 
-print('Box dimensions:\t%.4fx%.4fx%.4f' %((xhi-xlo,yhi-ylo,zhi-zlo)) )
+print('Box dimensions:\t%.4f x %.4f x %.4f Ang^3' %((xhi-xlo,yhi-ylo,zhi-zlo)) )
 
 total_mass = total_mass / 6.022 / 10**23 # [g/mol * mol/# = g]
 s1 = (xhi-xlo) * 10**-8 # [Ang * 10^8 cm/Ang = cm]
@@ -91,11 +95,4 @@ s3 = (zhi-zlo) * 10**-8 # cm
 vol = s1*s2*s3 # cm^3
 density = total_mass / vol #/ 6.022 / 10
 
-print('Density of the PA membrane using box dimensions: %.4f' %(density) )
-
-s3 = (zmax-zmin) * 10**-8 # cm
-vol = s1*s2*s3
-density = total_mass / vol #/ 6.022 / 10
-
-print('\nBox z dimension should be: %.4f %.4f zlo zhi' %(zmin, zmax) )
-print('Density of the PA membrane using new dimensions: %.4f' %(density) )
+print('Density: %.6f g/cm^3' %(density) )

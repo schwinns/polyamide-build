@@ -1,0 +1,38 @@
+#
+# PA membrane with water over and below
+#
+
+# Every atom from diferent molecules will be far from each other at
+# least 3.0 Anstrons at the solution.
+
+tolerance 3.0
+
+# CHANGING THE INITIAL RANDOM SEED
+
+seed 10000
+
+# INCREASING NUMBER OF LOOPS PER MOLECULE 
+
+nloop 200
+
+# INCREASING NUMBER OF CYCLES
+
+nloop0 1000
+
+# Coordinate file types will be in pdb format (keyword not required for
+# pdb file format, but required for tinker, xyz or moldy).
+
+filetype pdb
+
+# The output pdb file
+
+output water_box.pdb
+
+# The first three numbers are the minimum x, y, z coordinates for this
+# molecules, the last three are maximum coordinates. The box defined
+
+# Make a water box with dimensions 3.3510547 nm (membrane side length) and appropriate concentration
+structure HOH.pdb
+  number 1257
+  inside box 0 0 0 33.510547 33.510547 33.510547
+end structure
