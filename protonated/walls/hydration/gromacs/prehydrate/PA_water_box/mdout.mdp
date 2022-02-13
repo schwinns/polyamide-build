@@ -2,14 +2,14 @@
 ;	File 'mdout.mdp' was generated
 ;	By user: nate_schwindt (501)
 ;	On host: cu-genvpn-tcom-10.180.146.198.int.colorado.edu
-;	At date: Tue Feb  8 14:54:31 2022
+;	At date: Tue Feb  8 15:20:35 2022
 ;
 ;	Created by:
 ;	                     :-) GROMACS - gmx grompp, 2020.5 (-:
 ;	
 ;	Executable:   /usr/local/gromacs/bin/gmx
 ;	Data prefix:  /usr/local/gromacs
-;	Working dir:  /Users/nate_schwindt/Projects/polymer_membrane/Polymatic/lin_xlink/protonated/walls/hydration/gromacs/PA_water_box
+;	Working dir:  /Users/nate_schwindt/Projects/polymer_membrane/Polymatic/lin_xlink/protonated/walls/hydration/gromacs/prehydrate/PA_water_box
 ;	Command line:
 ;	  gmx grompp -f npt.mdp -c nvt.gro -p PA_hydrated.top -o npt.tpr
 
@@ -140,12 +140,12 @@ tau-t                    = 0.1
 ref-t                    = 300.0
 ; pressure coupling     
 Pcoupl                   = Parrinello-Rahman
-Pcoupltype               = isotropic
+Pcoupltype               = semiisotropic
 nstpcouple               = -1
 ; Time constant (ps), compressibility (1/bar) and reference P (bar)
 tau-p                    = 1
-compressibility          = 4.5e-5
-ref-p                    = 1.01325
+compressibility          = 4.5e-5 4.5e-5
+ref-p                    = 1.01325 1.01325
 ; Scaling of reference coordinates, No, All or COM
 refcoord-scaling         = No
 

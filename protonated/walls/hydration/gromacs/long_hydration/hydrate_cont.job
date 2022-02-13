@@ -1,0 +1,23 @@
+#!/bin/bash
+#SBATCH -N 1 --ntasks-per-node=128
+#SBATCH -t 3:00:00
+#SBATCH -p RM
+#SBATCH -J 'hydrate_cont'
+#SBATCH -o '%x.out'
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=nasc4134@colorado.edu
+
+module load gcc
+module load cuda/11.1.1
+module load openmpi/3.1.6-gcc8.3.1
+PATH=$PATH:/jet/home/schwinns/pkgs/gromacs/2020.5
+source /jet/home/schwinns/pkgs/gromacs/2020.5/bin/GMXRC
+
+export GMX_MAXBACKUP=-1  # do not make back-ups
+export GMX_MAXCONSTRWARN=-1
+
+#NPT (200 ns)
+#gmx grompp -p PA_hydrated.top -f hydrate.mdp -c prehydrate.gro -o hydrate.tpr
+#gmx mdrun -deffnm hydrate -ntomp 1
+
+gmx mdrun -cpi hydrate.cpt -deffnm hydrate -ntomp 1
