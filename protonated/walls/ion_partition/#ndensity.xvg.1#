@@ -1,0 +1,75 @@
+# This file was created Wed Feb 16 12:29:09 2022
+# Created by:
+#                     :-) GROMACS - gmx density, 2020.5 (-:
+# 
+# Executable:   /usr/local/gromacs/bin/gmx
+# Data prefix:  /usr/local/gromacs
+# Working dir:  /Users/nate_schwindt/Projects/polymer_membrane/Polymatic/lin_xlink/protonated/walls/ion_partition
+# Command line:
+#   gmx density -f ion_partition_center.xtc -s ion_partition.tpr -o ndensity.xvg -b 200000 -dt 2000 -dens number -ng 2
+# gmx density is part of G R O M A C S:
+#
+# Georgetown Riga Oslo Madrid Amsterdam Chisinau Stockholm
+#
+@    title "Partial density"
+@    xaxis  label "Coordinate (nm)"
+@    yaxis  label "Number density (nm\S-3\N)"
+@TYPE xy
+@ view 0.15, 0.15, 0.75, 0.85
+@ legend on
+@ legend box on
+@ legend loctype view
+@ legend 0.78, 0.8
+@ legend length 2
+@ s0 legend "NA"
+@ s1 legend "CL"
+   0.0858148        0.0442578      0.0883447
+    0.257444        0.0294673      0.0663539
+    0.429074        0.0295004      0.0663602
+    0.600704        0.0294144       0.103347
+    0.772333        0.0294249       0.110468
+    0.943963        0.0515926       0.110463
+     1.11559        0.0663357       0.154633
+     1.28722         0.103216      0.0736632
+     1.45885        0.0589166       0.103154
+     1.63048        0.0441609      0.0589215
+     1.80211       0.00736645              0
+     1.97374        0.0810903              0
+     2.14537          0.17695              0
+       2.317         0.117843              0
+     2.48863                0              0
+     2.66026                0              0
+     2.83189                0              0
+     3.00352                0              0
+     3.17515                0              0
+     3.34678                0              0
+     3.51841                0              0
+     3.69004                0              0
+     3.86167                0              0
+      4.0333                0              0
+     4.20493                0              0
+     4.37655                0              0
+     4.54818                0              0
+     4.71981                0              0
+     4.89144                0              0
+     5.06307                0              0
+      5.2347                0              0
+     5.40633                0              0
+     5.57796                0              0
+     5.74959                0              0
+     5.92122                0              0
+     6.09285                0              0
+     6.26448                0              0
+     6.43611                0      0.0221194
+     6.60774        0.0147786      0.0294869
+     6.77937         0.243314      0.0294059
+       6.951         0.243073      0.0663892
+     7.12263        0.0442346       0.103154
+     7.29426        0.0294317      0.0810559
+     7.46589         0.029453      0.0885631
+     7.63752        0.0663566      0.0810834
+     7.80915         0.117954        0.10313
+     7.98078         0.110647       0.110603
+     8.15241        0.0515855      0.0812185
+     8.32404         0.036939       0.081135
+     8.49567        0.0221141       0.066362
