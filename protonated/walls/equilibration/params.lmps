@@ -1,11 +1,5 @@
 Parameters for PA Membrane simulations from GAFF
 
-? atoms
-? bonds
-? angles
-? dihedrals
-? impropers
-
 14 atom types
 18 bond types
 23 angle types
@@ -122,7 +116,7 @@ Dihedral Coeffs # id, K [kcal/mol], n, d [degrees], weighting factor for 1-4 int
  18 charmm    3.62500000e+00         2       180         0 # CA-CA-CA-NH
  19 charmm    3.62500000e+00         2       180         0 # HA-CA-CA-HA
  20 charmm    3.62500000e+00         2       180         0 # HA-CA-CA-NH
- 21 charmm    1.10000000e+00         2       180         0 # CA-O-OH-CT (improper) (changed from CA-O-O-C in unprotonated)
+ 21 charmm    1.10000000e+00         2       180         0 # CA-O-OH-CT (improper)
  22 charmm    1.10000000e+00         2       180         0 # CA-CA-CA-C (improper)
  23 charmm    1.10000000e+00         2       180         0 # CA-CA-CA-LC (improper)
  24 charmm    1.10000000e+00         2       180         0 # LC-CA-LN-HN (improper)
