@@ -18,17 +18,17 @@ args = parser.parse_args()
 xvg = gro.fileformats.XVG(args.xvg)
 sim_data = xvg.array
 r = sim_data[0,:] * 10
-rdf = sim_data[1,:] - sim_data[1,np.where(r == 10)[0]]
+rdf = sim_data[1,:] #- sim_data[1,np.where(r == 10)[0]]
 
 fig, ax = plt.subplots(1,1)
-plt.plot(r, rdf, c='k', label='Simulation')
-plt.xlim(0,10)
-plt.ylim(-2,8)
-plt.ylabel('G(r)')
+plt.plot(r, rdf, c='b', label='Simulation')
+# plt.xlim(0,10)
+plt.ylim(-5,20)
+plt.ylabel('g(r)')
 plt.xlabel('r (A)')
 
-ax.yaxis.set_major_locator(MultipleLocator(1))
-ax.yaxis.set_minor_locator(MultipleLocator(0.2))
+ax.yaxis.set_major_locator(MultipleLocator(5))
+ax.yaxis.set_minor_locator(MultipleLocator(1))
 ax.xaxis.set_major_locator(MultipleLocator(1))
 ax.xaxis.set_minor_locator(MultipleLocator(0.2))
 ax.axhline(c='k', lw=0.5)
@@ -45,12 +45,15 @@ max_idx = np.where(exp_data[:,0] == np.max(exp_data[:,0]))[0]
 ## Data is from min_idx[0] to max_idx[0]
 ## Base line is from min_idx[1] to max_idx[1]
 
+# number density?
+rho = 0.0953
+
 clean = np.zeros((max_idx[0] - min_idx[0], 2))
 clean[:,0] = exp_data[min_idx[0]:max_idx[0],0] + 1
-clean[:,1] = exp_data[min_idx[0]:max_idx[0],1]
+clean[:,1] = exp_data[min_idx[0]:max_idx[0],1] / (4*np.pi*clean[:,0]*rho) + 1
 
 # Plot the data
-plt.plot(clean[:,0], clean[:,1], c='b', label='Experiment') # custom labels
+plt.plot(clean[:,0], clean[:,1], c='r', label='Experiment') # custom labels
 plt.legend()
 
 # plt.savefig(args.file.split('.')[0] + '_sim_compare.png')
