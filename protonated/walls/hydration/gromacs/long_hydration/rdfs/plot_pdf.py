@@ -22,8 +22,8 @@ rdf = sim_data[1,:] #- sim_data[1,np.where(r == 10)[0]]
 
 fig, ax = plt.subplots(1,1)
 plt.plot(r, rdf, c='b', label='Simulation')
-# plt.xlim(0,10)
-plt.ylim(-5,20)
+plt.xlim(0,10)
+plt.ylim(-5,10)
 plt.ylabel('g(r)')
 plt.xlabel('r (A)')
 
@@ -56,7 +56,7 @@ clean[:,1] = exp_data[min_idx[0]:max_idx[0],1] / (4*np.pi*clean[:,0]*rho) + 1
 plt.plot(clean[:,0], clean[:,1], c='r', label='Experiment') # custom labels
 plt.legend()
 
-# plt.savefig(args.file.split('.')[0] + '_sim_compare.png')
+plt.savefig(args.file.split('.')[0] + '_sim_compare.png')
 
 plt.show()
 
