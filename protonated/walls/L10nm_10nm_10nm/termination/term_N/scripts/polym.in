@@ -1,0 +1,4 @@
+link N,NH H,HN
+cutoff 5.0
+charge -0.5 0.5
+intra true 5
