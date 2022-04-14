@@ -194,11 +194,12 @@ sub findPair
                 next if (!aligned([$a1, $a2]));
             }
 
-            # Edit 4/7/22
+            # Edit 4/12/22
             # Break the loop at the first pair within cutoff distance
-            last if ($closest == 0) {
+            if ($closest == 0) {
                 $closest = $sep;
                 @pair = ($a1, $a2);
+                last;
             }
 
             # # Save pair if closest
