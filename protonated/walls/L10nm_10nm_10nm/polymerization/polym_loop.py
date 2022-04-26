@@ -45,12 +45,14 @@ import subprocess
 import shutil
 import glob
 
+from timeit import default_timer as time
+
 #
 # User Setup
 #
 
 # Parameters
-bonds = 48
+bonds = 94
 bonds_tot = 14376
 bonds_cyc = 200
 md_cyc = 5
@@ -87,6 +89,8 @@ def main():
 
 def polym_loop():
 
+    start_time = time()
+
     # Variables
     global bonds
 
@@ -104,9 +108,13 @@ def polym_loop():
         bonds += 1
         setup_step()
         code = polym_step()
+        step_time = time()
+        print '\nPolymerization for Bond %d took %s time' %(bonds, step_time - start_time)
         if (code == 1):
             break
         em()
+        em_time = time()
+        print 'EM for Bond %d took %s time' %(bonds, em_time - step_time)
 
         # Stop if finished
         if (bonds == bonds_tot):
@@ -119,6 +127,9 @@ def polym_loop():
                 md(2)
             else:
                 md(1)
+        md_time = time()
+        print 'MD for Bond %d took %s time' %(bonds, md_time - em_time)
+        print 'Total for Bond %d is %s elapsed time\n' %(bonds, time() - start_time)
 
     # Finalization
     polym_final()
