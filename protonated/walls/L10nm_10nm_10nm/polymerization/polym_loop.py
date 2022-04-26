@@ -50,7 +50,7 @@ import glob
 #
 
 # Parameters
-bonds = 48
+bonds = 73
 bonds_tot = 14376
 bonds_cyc = 200
 md_cyc = 5
