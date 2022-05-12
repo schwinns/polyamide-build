@@ -1,0 +1,74 @@
+# This file was created Wed May 11 14:34:35 2022
+# Created by:
+#                     :-) GROMACS - gmx density, 2020.5 (-:
+# 
+# Executable:   /home/nate/pkgs/gromacs/bin/gmx
+# Data prefix:  /home/nate/pkgs/gromacs
+# Working dir:  /home/nate/Projects/polymer_membrane/Polymatic/polyamide-build/protonated/walls/L33A_33A_68A/hydration
+# Command line:
+#   gmx density -f long_hydration/hydrate.xtc -s long_hydration/hydrate.tpr -o long_hydration/ndensity.xvg -dens number
+# gmx density is part of G R O M A C S:
+#
+# Gyas ROwers Mature At Cryogenic Speed
+#
+@    title "Partial density"
+@    xaxis  label "Coordinate (nm)"
+@    yaxis  label "Number density (nm\S-3\N)"
+@TYPE xy
+@ view 0.15, 0.15, 0.75, 0.85
+@ legend on
+@ legend box on
+@ legend loctype view
+@ legend 0.78, 0.8
+@ legend length 2
+@ s0 legend "System"
+   0.0878931          108.473
+    0.263679          108.724
+    0.439466          108.433
+    0.615252          108.212
+    0.791038          106.952
+    0.966824          108.644
+     1.14261           107.35
+      1.3184          106.904
+     1.49418          105.412
+     1.66997          108.821
+     1.84576          103.641
+     2.02154          102.822
+     2.19733          107.065
+     2.37311          105.381
+      2.5489          103.306
+     2.72469          108.022
+     2.90047          101.922
+     3.07626          108.076
+     3.25205          103.953
+     3.42783          107.512
+     3.60362          108.355
+      3.7794          109.742
+     3.95519              107
+     4.13098          110.408
+     4.30676          106.253
+     4.48255          107.218
+     4.65834          107.721
+     4.83412           106.78
+     5.00991          106.168
+     5.18569          103.744
+     5.36148          105.209
+     5.53727          102.499
+     5.71305          101.814
+     5.88884          100.506
+     6.06462          100.707
+     6.24041          100.551
+      6.4162           100.89
+     6.59198           100.94
+     6.76777          101.069
+     6.94356            100.7
+     7.11934          101.202
+     7.29513          101.809
+     7.47091          102.074
+      7.6467           103.16
+     7.82249          104.032
+     7.99827           105.25
+     8.17406          106.302
+     8.34985          106.709
+     8.52563          108.245
+     8.70142          107.254

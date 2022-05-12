@@ -1,19 +1,16 @@
-# RDF analysis with MDTraj
-# Scales by f_i(0)*f_j(0) / <f>^2
+# Script to quickly plot .xvg files from GROMACS
+# Uses GromacsWrapper so should be in LLC-env or gro_wrap
 
-import mdtraj as md
-from mdtraj.utils import ensure_type
-from mdtraj.geometry.distance import compute_distances
 import numpy as np
-import json
 from gromacs.formats import XVG
+import mdtraj as md
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator
 from time import time
 
-# compute_rdf taken from MDTraj and modified to scale distances
+# compute_rdf taken from MDTraj and modified to use truncated unit cell
 def compute_rdf(traj, pairs, r_range=None, bin_width=0.005, n_bins=None,
-                periodic=True, opt=True, scale=True, scaling_factors=None):
+                periodic=True, opt=True, bulk_lims=None):
     """Compute radial distribution functions for pairs in every frame.
     Parameters
     ----------
@@ -34,8 +31,6 @@ def compute_rdf(traj, pairs, r_range=None, bin_width=0.005, n_bins=None,
         convention.
     opt : bool, default=True
         Use an optimized native library to compute the pair wise distances.
-    scale : bool, default=True
-        Use atomic form factor scaling
     Returns
     -------
     r : np.ndarray, shape=(np.diff(r_range) / bin_width - 1), dtype=float
@@ -48,7 +43,7 @@ def compute_rdf(traj, pairs, r_range=None, bin_width=0.005, n_bins=None,
     """
     if r_range is None:
         r_range = np.array([0.0, 1.0])
-    r_range = ensure_type(r_range, dtype=np.float64, ndim=1, name='r_range',
+    r_range = md.utils.ensure_type(r_range, dtype=np.float64, ndim=1, name='r_range',
                           shape=(2,), warn_on_cast=False)
     if n_bins is not None:
         n_bins = int(n_bins)
@@ -57,15 +52,15 @@ def compute_rdf(traj, pairs, r_range=None, bin_width=0.005, n_bins=None,
     else:
         n_bins = int((r_range[1] - r_range[0]) / bin_width)
 
-    distances = compute_distances(traj, pairs, periodic=periodic, opt=opt)
-    if scale:
-        # scaled_distances = scale_distances(traj, pairs, distances, scaling_factors, json_factors='./form_factors.json')
-        scaled_distances = distances * scaling_factors
-        g_r, edges = np.histogram(scaled_distances, range=r_range, bins=n_bins)
-    else:
-        g_r, edges = np.histogram(distances, range=r_range, bins=n_bins)
-    
+    distances = md.geometry.distance.compute_distances(traj, pairs, periodic=periodic, opt=opt)
+    g_r, edges = np.histogram(distances, range=r_range, bins=n_bins)
     r = 0.5 * (edges[1:] + edges[:-1])
+
+    if bulk_lims is not None:
+        # unitcell_vol = traj.unitcell_lengths[:,0] * traj.unitcell_lengths[:,1] * (bulk_lims[1] - bulk_lims[0])
+        unitcell_vol = traj.unitcell_volumes * (traj.unitcell_lengths[:,2] / (bulk_lims[1] - bulk_lims[0]))
+    else:
+        unitcell_vol = traj.unitcell_volumes
 
     # Normalize by volume of the spherical shell.
     # See discussion https://github.com/mdtraj/mdtraj/pull/724. There might be
@@ -74,7 +69,7 @@ def compute_rdf(traj, pairs, r_range=None, bin_width=0.005, n_bins=None,
     # of doing the calculations matches the implementation in other packages like
     # AmberTools' cpptraj and gromacs g_rdf.
     V = (4 / 3) * np.pi * (np.power(edges[1:], 3) - np.power(edges[:-1], 3))
-    norm = len(pairs) * np.sum(1.0 / traj.unitcell_volumes) * V
+    norm = len(pairs) * np.sum(1.0 / unitcell_vol) * V
     g_r = g_r.astype(np.float64) / norm  # From int64.
     return r, g_r
 
@@ -150,9 +145,8 @@ def get_bonding(topology):
     return bonding
 
 
-
 #################################################################################
-########################### MAIN USE OF FUNCTIONS ###############################
+############################## SIMULATION RDFS ##################################
 #################################################################################
 
 ################################# INPUTS ########################################
@@ -161,17 +155,16 @@ excl = True                         # if True, do not calculate interatomic dist
 water = True                        # if True, include water in RDF
 bulk = True                         # if True, only calculate RDF for the bulk defined by bulk_lims (only consider atoms within cutoff in last frame)
 bulk_lims = np.array([2.5,5.5])     # bulk cutoffs in nm (z-direction)
-scale = True                       # if True, scale the RDF by atomic form factors
 
-frame_by = 100                      # Only calculate the RDF when frame % frame_by = 0
+frame_start = 351
+frame_end = 401
 timing = True                       # if True, display timing information
 plot = True                         # if True, show final RDF plot
 
 traj = '../hydrate.xtc'             # input trajectory
 gro = '../hydrate.gro'              # input coordinate file
 topology = '../PA_hydrated.top'     # input PA topology
-json_factors = './form_factors.json'# 
-filename = './scaled_rdf_bulk.xvg'  # output RDF filename
+filename = './output.xvg'           # output RDF filename
 
 #################################################################################
 
@@ -191,62 +184,45 @@ if bulk:
     ub = np.where(t.xyz[-1,:,2] < bulk_lims[1])[0]
 
     atom_idx = np.array([i for i in lb if i in ub])
+    # old_idx = np.array([i for i in lb if i in ub])
+    
+    # t = t.atom_slice(old_idx) # create a new trajectory only with bulk atoms
+    # top = t.topology
+    # atom_idx = [atom.index for atom in top.atoms]
+
+    # idx_dict = {}
+    # for i, new in enumerate(atom_idx):
+    #     idx_dict[new] = old_idx[i]
 else:
     atom_idx = [atom.index for atom in top.atoms]
 
 load_time = time()
 # Apply the inputs to select only desired atom pairs
-print('Finding pairs of atoms and scaling factors...')
-form_factors = json.load(open(json_factors))
-
+print('Finding pairs of atoms...')
 pairs = []
-scaling_factors = []
-avg_f = 0
-count = 0
 for i in atom_idx:
-    f_i = form_factors[top.atom(i).element.symbol]
-    avg_f += f_i
-    count += 1
     for j in atom_idx:
         if i != j:
-            f_j = form_factors[top.atom(j).element.symbol]
             if excl:
 
                 if top.atom(i).residue.is_water or top.atom(j).residue.is_water: # if either atom is water
                     if top.atom(i).residue.resSeq != top.atom(j).residue.resSeq: # check if they are same water molecule
                         pairs.append([i,j])
-                        scaling_factors.append(f_i*f_j)
                         
                 else: # if not water, check if they should be excluded
                     if j not in bonding[i]['exclusions']:
+                    # if j not in bonding[idx_dict[i]]['exclusions']:
                         pairs.append([i,j])
-                        scaling_factors.append(f_i*f_j)
             else:
                 pairs.append([i,j])
-                scaling_factors.append(f_i*f_j)
-
-avg_f = avg_f / count
-scaling_factors = np.array(scaling_factors) / avg_f**2
 
 pair_time = time()
-# Compute the rdfs and save data as XVG
 print('Computing the RDF...')
-count = 1
-for f in range(t.n_frames):
-    if f == 0:
-        r_avg, g_avg = compute_rdf(t[f], pairs, scale=scale, scaling_factors=scaling_factors)
-        one_frame_time = time()
-    elif f % frame_by == 0:
-        r, g_r = compute_rdf(t[f], pairs, scale=scale, scaling_factors=scaling_factors)
-        print('\tFrame %d out of %d' %(f, t.n_frames))
-        r_avg += r
-        g_avg += g_r
-        count += 1
-
-################################# RESULTS ########################################
+# r, g_r = md.compute_rdf(t[frame_start:frame_end], pairs)
+r, g_r = compute_rdf(t[frame_start:frame_end], pairs, bulk_lims=bulk_lims)
 
 print("Writing the RDF data to '%s'" %(filename))
-data = np.vstack((r_avg*10 / count, g_avg / count))
+data = np.vstack((r*10, g_r))
 xvg = XVG(array=data, names=['r [Å]', 'g(r)'])
 xvg.write(filename)
 print('----------------------------------------------------------------')
@@ -256,22 +232,66 @@ if timing:
     print('\n\n----------------------- TIMING BREAKDOWN -----------------------')
     print('\tLoading trajectory and inputs:\t\t%f' %(load_time - start))
     print('\tFinding pairs:\t\t\t\t%f' %(pair_time - load_time))
-    print('\tRDF for one frame:\t\t\t%f' %(one_frame_time - pair_time))
-    print('\tAll RDF computations:\t\t\t%f' %(rdf_time - pair_time))
+    print('\tRDF computations:\t\t\t%f' %(rdf_time - pair_time))
     print('\n\tTotal time:\t\t\t\t%f' %(rdf_time - start))
     print('----------------------------------------------------------------')
 
 if plot:
     fig, ax = plt.subplots(1,1)
-    plt.plot(r_avg*10 / count, g_avg / count)
+    plt.plot(r*10, g_r, c='b', label='Simulation')
     plt.xlim(0,10)
-    plt.xlabel('r [Å]')
+    # plt.ylim(-5,10)
     plt.ylabel('g(r)')
+    plt.xlabel('r (Å)')
 
-    # ax.yaxis.set_major_locator(MultipleLocator(1))
-    # ax.yaxis.set_minor_locator(MultipleLocator(0.25))
-    # ax.xaxis.set_major_locator(MultipleLocator(1))
-    # ax.xaxis.set_minor_locator(MultipleLocator(0.2))
-    plt.show()
+    ax.yaxis.set_major_locator(MultipleLocator(1))
+    ax.yaxis.set_minor_locator(MultipleLocator(0.25))
+    ax.xaxis.set_major_locator(MultipleLocator(1))
+    ax.xaxis.set_minor_locator(MultipleLocator(0.25))
+    ax.axhline(c='k', lw=0.5)
 
 #################################################################################
+############################## EXPERIMENTAL RDFS ################################
+#################################################################################
+
+################################# INPUTS ########################################
+
+filename = './TN4'   # input file with G(r) data
+rho = 0.0953         # atomic number density
+rho_sim = True       # if True, calculate the number density from simulation
+
+#################################################################################
+
+# Calculate the number density from the atom indices in the bulk simulation in final frame
+if rho_sim:
+    xy = t.unitcell_lengths[-1,0]*10
+    z = (bulk_lims[1] - bulk_lims[0])*10
+    n_atoms = len(atom_idx)
+
+    rho = n_atoms / xy**2 / z
+    print('\nNumber density of bulk from simulation: %.4f atoms/Å^3' %(rho) )
+
+# Read in data
+exp_data = np.loadtxt(filename, comments='#')
+
+# Clean data
+min_idx = np.where(exp_data[:,0] == np.min(exp_data[:,0]))[0]
+max_idx = np.where(exp_data[:,0] == np.max(exp_data[:,0]))[0]
+
+## Data is from min_idx[0] to max_idx[0]
+## Base line is from min_idx[1] to max_idx[1]
+
+shift_idx = np.where(exp_data[:,0] == 1)[0]
+
+# clean = np.zeros((max_idx[0] - min_idx[0], 2))
+clean = np.zeros((max_idx[0] - shift_idx[0], 2))
+clean[:,0] = exp_data[shift_idx[0]:max_idx[0],0]
+clean[:,1] = exp_data[shift_idx[0]:max_idx[0],1] / (4*np.pi*clean[:,0]*rho) + 1
+# clean[:,0] = exp_data[min_idx[0]:max_idx[0],0] + 1
+# clean[:,1] = exp_data[min_idx[0]:max_idx[0],1] / (4*np.pi*clean[:,0]*rho) + 1
+
+# Plot the data
+if plot:
+    plt.plot(clean[:,0], clean[:,1], c='r', label='Experiment') # custom labels
+    plt.legend()
+    plt.show()

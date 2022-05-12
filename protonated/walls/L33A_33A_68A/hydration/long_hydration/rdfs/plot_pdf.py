@@ -56,7 +56,7 @@ clean[:,1] = exp_data[min_idx[0]:max_idx[0],1] / (4*np.pi*clean[:,0]*rho) + 1
 plt.plot(clean[:,0], clean[:,1], c='r', label='Experiment') # custom labels
 plt.legend()
 
-plt.savefig(args.file.split('.')[0] + '_sim_compare.png')
+# plt.savefig(args.file.split('.')[0] + '_sim_compare.png')
 
 plt.show()
 
