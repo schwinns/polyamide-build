@@ -160,10 +160,10 @@ def get_bonding(topology):
 excl = True                         # if True, do not calculate interatomic distances for 1-2, 1-3, 1-4 atoms in molecules
 water = True                        # if True, include water in RDF
 bulk = True                         # if True, only calculate RDF for the bulk defined by bulk_lims (only consider atoms within cutoff in last frame)
-bulk_lims = np.array([2.5,5.5])     # bulk cutoffs in nm (z-direction)
+bulk_lims = np.array([1.5,4.5])     # bulk cutoffs in nm (z-direction)
 scale = True                       # if True, scale the RDF by atomic form factors
 
-frame_by = 100                      # Only calculate the RDF when frame % frame_by = 0
+frame_by = 200                      # Only calculate the RDF when frame % frame_by = 0
 timing = True                       # if True, display timing information
 plot = True                         # if True, show final RDF plot
 
