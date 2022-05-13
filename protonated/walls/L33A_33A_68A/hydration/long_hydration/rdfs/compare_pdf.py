@@ -57,9 +57,9 @@ def compute_rdf(traj, pairs, r_range=None, bin_width=0.005, n_bins=None,
     r = 0.5 * (edges[1:] + edges[:-1])
 
     if bulk_lims is not None:
-        # unitcell_vol = traj.unitcell_lengths[:,0] * traj.unitcell_lengths[:,1] * (bulk_lims[1] - bulk_lims[0])
-        unitcell_vol = traj.unitcell_volumes * (traj.unitcell_lengths[:,2] / (bulk_lims[1] - bulk_lims[0]))
+        unitcell_vol = traj.unitcell_volumes * ((bulk_lims[1] - bulk_lims[0]) / traj.unitcell_lengths[:,2])
     else:
+        print('\tDefaulting to scaling by full simulation cell...')
         unitcell_vol = traj.unitcell_volumes
 
     # Normalize by volume of the spherical shell.
@@ -154,9 +154,9 @@ def get_bonding(topology):
 excl = True                         # if True, do not calculate interatomic distances for 1-2, 1-3, 1-4 atoms in molecules
 water = True                        # if True, include water in RDF
 bulk = True                         # if True, only calculate RDF for the bulk defined by bulk_lims (only consider atoms within cutoff in last frame)
-bulk_lims = np.array([2.5,5.5])     # bulk cutoffs in nm (z-direction)
+bulk_lims = np.array([1.5,4.5])     # bulk cutoffs in nm (z-direction)
 
-frame_start = 351
+frame_start = 301
 frame_end = 401
 timing = True                       # if True, display timing information
 plot = True                         # if True, show final RDF plot
@@ -184,15 +184,8 @@ if bulk:
     ub = np.where(t.xyz[-1,:,2] < bulk_lims[1])[0]
 
     atom_idx = np.array([i for i in lb if i in ub])
-    # old_idx = np.array([i for i in lb if i in ub])
-    
-    # t = t.atom_slice(old_idx) # create a new trajectory only with bulk atoms
-    # top = t.topology
-    # atom_idx = [atom.index for atom in top.atoms]
+    print('Calculating RDF for bulk membrane. Found %d atoms within %.2f nm to %.2f nm' %(len(atom_idx), bulk_lims[0], bulk_lims[1]) )
 
-    # idx_dict = {}
-    # for i, new in enumerate(atom_idx):
-    #     idx_dict[new] = old_idx[i]
 else:
     atom_idx = [atom.index for atom in top.atoms]
 
@@ -211,13 +204,12 @@ for i in atom_idx:
                         
                 else: # if not water, check if they should be excluded
                     if j not in bonding[i]['exclusions']:
-                    # if j not in bonding[idx_dict[i]]['exclusions']:
                         pairs.append([i,j])
             else:
                 pairs.append([i,j])
 
 pair_time = time()
-print('Computing the RDF...')
+print('Computing the RDF from frame %d (%.1f ps) to frame %d (%.1f ps)...' %(frame_start, t[frame_start-1].time, frame_end, t[frame_end-1].time) )
 # r, g_r = md.compute_rdf(t[frame_start:frame_end], pairs)
 r, g_r = compute_rdf(t[frame_start:frame_end], pairs, bulk_lims=bulk_lims)
 
@@ -281,14 +273,14 @@ max_idx = np.where(exp_data[:,0] == np.max(exp_data[:,0]))[0]
 ## Data is from min_idx[0] to max_idx[0]
 ## Base line is from min_idx[1] to max_idx[1]
 
-shift_idx = np.where(exp_data[:,0] == 1)[0]
+# shift_idx = np.where(exp_data[:,0] == 1)[0]
+# clean = np.zeros((max_idx[0] - shift_idx[0], 2))
+# clean[:,0] = exp_data[shift_idx[0]:max_idx[0],0]
+# clean[:,1] = exp_data[shift_idx[0]:max_idx[0],1] / (4*np.pi*clean[:,0]*rho) + 1
 
-# clean = np.zeros((max_idx[0] - min_idx[0], 2))
-clean = np.zeros((max_idx[0] - shift_idx[0], 2))
-clean[:,0] = exp_data[shift_idx[0]:max_idx[0],0]
-clean[:,1] = exp_data[shift_idx[0]:max_idx[0],1] / (4*np.pi*clean[:,0]*rho) + 1
-# clean[:,0] = exp_data[min_idx[0]:max_idx[0],0] + 1
-# clean[:,1] = exp_data[min_idx[0]:max_idx[0],1] / (4*np.pi*clean[:,0]*rho) + 1
+clean = np.zeros((max_idx[0] - min_idx[0], 2))
+clean[:,0] = exp_data[min_idx[0]:max_idx[0],0] #+ 1 # shift up by 1 since cannot capture anything below 1 Angstrom
+clean[:,1] = exp_data[min_idx[0]:max_idx[0],1] / (4*np.pi*clean[:,0]*rho) + 1
 
 # Plot the data
 if plot:
