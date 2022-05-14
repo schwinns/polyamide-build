@@ -4,13 +4,14 @@
 import numpy as np
 from gromacs.formats import XVG
 import mdtraj as md
+import json
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator
 from time import time
 
 # compute_rdf taken from MDTraj and modified to use truncated unit cell
 def compute_rdf(traj, pairs, r_range=None, bin_width=0.005, n_bins=None,
-                periodic=True, opt=True, bulk_lims=None):
+                periodic=True, opt=True, bulk_lims=None, scale=True, scaling_factors=None):
     """Compute radial distribution functions for pairs in every frame.
     Parameters
     ----------
@@ -53,8 +54,11 @@ def compute_rdf(traj, pairs, r_range=None, bin_width=0.005, n_bins=None,
         n_bins = int((r_range[1] - r_range[0]) / bin_width)
 
     distances = md.geometry.distance.compute_distances(traj, pairs, periodic=periodic, opt=opt)
-    g_r, edges = np.histogram(distances, range=r_range, bins=n_bins)
-    r = 0.5 * (edges[1:] + edges[:-1])
+    if scale:
+        g_r, edges = np.histogram(distances, range=r_range, bins=n_bins, weights=scaling_factors)
+        r = 0.5 * (edges[1:] + edges[:-1])
+    else:
+        g_r, edges = np.histogram(distances, range=r_range, bins=n_bins)
 
     if bulk_lims is not None:
         unitcell_vol = traj.unitcell_volumes * ((bulk_lims[1] - bulk_lims[0]) / traj.unitcell_lengths[:,2])
@@ -155,6 +159,7 @@ excl = True                         # if True, do not calculate interatomic dist
 water = True                        # if True, include water in RDF
 bulk = True                         # if True, only calculate RDF for the bulk defined by bulk_lims (only consider atoms within cutoff in last frame)
 bulk_lims = np.array([1.5,4.5])     # bulk cutoffs in nm (z-direction)
+scale = True                        # if True, scale the RDF by atomic form factors
 
 frame_start = 301
 frame_end = 401
@@ -164,6 +169,7 @@ plot = True                         # if True, show final RDF plot
 traj = '../hydrate.xtc'             # input trajectory
 gro = '../hydrate.gro'              # input coordinate file
 topology = '../PA_hydrated.top'     # input PA topology
+json_factors = './form_factors.json'# json file with form factors
 filename = './output.xvg'           # output RDF filename
 
 #################################################################################
@@ -189,29 +195,53 @@ if bulk:
 else:
     atom_idx = [atom.index for atom in top.atoms]
 
+# Calculate the average form factor
+if scale:
+    print('Finding pairs of atoms and pre-calculating form factors...')
+    form_factors = json.load(open(json_factors))
+    factors = np.zeros(len(atom_idx))
+    for i, idx in enumerate(atom_idx):
+        f_i = form_factors[top.atom(idx).element.symbol]
+        factors[i] = f_i
+
+    avg_f = factors.mean()
+
+else:
+     print('Finding pairs of atoms...')
+     scaling_factors = None
+
 load_time = time()
 # Apply the inputs to select only desired atom pairs
-print('Finding pairs of atoms...')
+scaling = []
 pairs = []
 for i in atom_idx:
     for j in atom_idx:
         if i != j:
+            f_i = form_factors[top.atom(i).element.symbol]
+            f_j = form_factors[top.atom(j).element.symbol]
+
             if excl:
 
                 if top.atom(i).residue.is_water or top.atom(j).residue.is_water: # if either atom is water
                     if top.atom(i).residue.resSeq != top.atom(j).residue.resSeq: # check if they are same water molecule
                         pairs.append([i,j])
+                        scaling.append(f_i*f_j)
                         
                 else: # if not water, check if they should be excluded
                     if j not in bonding[i]['exclusions']:
                         pairs.append([i,j])
+                        scaling.append(f_i*f_j)
             else:
                 pairs.append([i,j])
+                scaling.append(f_i*f_j)
+
+scaling_factors = np.zeros((frame_end - frame_start, len(pairs)))
+for f in range(frame_end - frame_start):
+    scaling_factors[f,:] = np.array(scaling) / avg_f**2
 
 pair_time = time()
 print('Computing the RDF from frame %d (%.1f ps) to frame %d (%.1f ps)...' %(frame_start, t[frame_start-1].time, frame_end, t[frame_end-1].time) )
-# r, g_r = md.compute_rdf(t[frame_start:frame_end], pairs)
-r, g_r = compute_rdf(t[frame_start:frame_end], pairs, bulk_lims=bulk_lims)
+r, g_r = compute_rdf(t[frame_start:frame_end], pairs, bulk_lims=bulk_lims, scale=scale, scaling_factors=scaling_factors)
 
 print("Writing the RDF data to '%s'" %(filename))
 data = np.vstack((r*10, g_r))
@@ -273,13 +303,8 @@ max_idx = np.where(exp_data[:,0] == np.max(exp_data[:,0]))[0]
 ## Data is from min_idx[0] to max_idx[0]
 ## Base line is from min_idx[1] to max_idx[1]
 
-# shift_idx = np.where(exp_data[:,0] == 1)[0]
-# clean = np.zeros((max_idx[0] - shift_idx[0], 2))
-# clean[:,0] = exp_data[shift_idx[0]:max_idx[0],0]
-# clean[:,1] = exp_data[shift_idx[0]:max_idx[0],1] / (4*np.pi*clean[:,0]*rho) + 1
-
 clean = np.zeros((max_idx[0] - min_idx[0], 2))
-clean[:,0] = exp_data[min_idx[0]:max_idx[0],0] #+ 1 # shift up by 1 since cannot capture anything below 1 Angstrom
+clean[:,0] = exp_data[min_idx[0]:max_idx[0],0]
 clean[:,1] = exp_data[min_idx[0]:max_idx[0],1] / (4*np.pi*clean[:,0]*rho) + 1
 
 # Plot the data
