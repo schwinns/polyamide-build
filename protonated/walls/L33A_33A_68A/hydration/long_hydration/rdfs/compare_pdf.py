@@ -54,11 +54,14 @@ def compute_rdf(traj, pairs, r_range=None, bin_width=0.005, n_bins=None,
         n_bins = int((r_range[1] - r_range[0]) / bin_width)
 
     distances = md.geometry.distance.compute_distances(traj, pairs, periodic=periodic, opt=opt)
+    print('\tFinished computing distances... distances array.shape = (%d, %d)' %(distances.shape[0], distances.shape[1]))
     if scale:
         g_r, edges = np.histogram(distances, range=r_range, bins=n_bins, weights=scaling_factors)
         r = 0.5 * (edges[1:] + edges[:-1])
+        print('\tFinished the weighted histogram')
     else:
         g_r, edges = np.histogram(distances, range=r_range, bins=n_bins)
+        r = 0.5 * (edges[1:] + edges[:-1])
 
     if bulk_lims is not None:
         unitcell_vol = traj.unitcell_volumes * ((bulk_lims[1] - bulk_lims[0]) / traj.unitcell_lengths[:,2])
@@ -161,8 +164,8 @@ bulk = True                         # if True, only calculate RDF for the bulk d
 bulk_lims = np.array([1.5,4.5])     # bulk cutoffs in nm (z-direction)
 scale = True                        # if True, scale the RDF by atomic form factors
 
-frame_start = 301
-frame_end = 401
+frame_start = 400                   # first frame to calculate RDF
+frame_end = 401                     # last frame to calculate RDF
 timing = True                       # if True, display timing information
 plot = True                         # if True, show final RDF plot
 
