@@ -64,7 +64,13 @@ def compute_rdf(traj, pairs, r_range=None, bin_width=0.005, n_bins=None,
         r = 0.5 * (edges[1:] + edges[:-1])
 
     if bulk_lims is not None:
-        unitcell_vol = traj.unitcell_volumes * ((bulk_lims[1] - bulk_lims[0]) / traj.unitcell_lengths[:,2])
+        unitcell_vol = traj.unitcell_volumes * ((bulk_lims[1,:] - bulk_lims[0,:]) / traj.unitcell_lengths[:,2])
+        print(unitcell_vol)
+        plt.plot(unitcell_vol, label='bulk')
+        plt.plot(traj.unitcell_volumes, label='full')
+        plt.legend()
+        plt.show()
+        exit()
     else:
         print('\tDefaulting to scaling by full simulation cell...')
         unitcell_vol = traj.unitcell_volumes
@@ -164,7 +170,7 @@ bulk = True                         # if True, only calculate RDF for the bulk d
 bulk_lims = np.array([1.5,4.5])     # bulk cutoffs in nm (z-direction)
 scale = True                        # if True, scale the RDF by atomic form factors
 
-frame_start = 400                   # first frame to calculate RDF
+frame_start = 390                   # first frame to calculate RDF
 frame_end = 401                     # last frame to calculate RDF
 timing = True                       # if True, display timing information
 plot = True                         # if True, show final RDF plot
@@ -189,10 +195,14 @@ if excl:
     print("Excluding bonded atoms. Getting bonding information from '%s'" %(topology))
     bonding = get_bonding(topology)
 if bulk:
-    lb = np.where(t.xyz[-1,:,2] > bulk_lims[0])[0]
-    ub = np.where(t.xyz[-1,:,2] < bulk_lims[1])[0]
+    atom_idx = []
+    for f in np.arange(frame_start, frame_end):
+        lb = np.where(t.xyz[f,:,2] > bulk_lims[0])[0]
+        ub = np.where(t.xyz[f,:,2] < bulk_lims[1])[0]
+        atom_idx = np.array([i for i in lb if i in ub]) # Only use the last frame for atom indices
 
-    atom_idx = np.array([i for i in lb if i in ub])
+        bulk_true = np.array([t.xyz[f,atom_idx,2].min(), t.xyz[f,atom_idx,2].max()])
+
     print('Calculating RDF for bulk membrane. Found %d atoms within %.2f nm to %.2f nm' %(len(atom_idx), bulk_lims[0], bulk_lims[1]) )
 
 else:
@@ -251,7 +261,7 @@ for f in range(frame_end - frame_start):
 
 pair_time = time()
 print('Computing the RDF from frame %d (%.1f ps) to frame %d (%.1f ps)...' %(frame_start, t[frame_start-1].time, frame_end, t[frame_end-1].time) )
-r, g_r = compute_rdf(t[frame_start:frame_end], pairs, bulk_lims=bulk_lims, scale=scale, scaling_factors=scaling_factors)
+r, g_r = compute_rdf(t[frame_start:frame_end], pairs, bulk_lims=bulk_true, scale=scale, scaling_factors=scaling_factors)
 
 print("Writing the RDF data to '%s'" %(filename))
 data = np.vstack((r*10, g_r))
@@ -281,6 +291,7 @@ if plot:
     ax.xaxis.set_major_locator(MultipleLocator(1))
     ax.xaxis.set_minor_locator(MultipleLocator(0.25))
     ax.axhline(c='k', lw=0.5)
+    ax.axvline(1, c='k', ls='dashed', lw='0.5')
 
 #################################################################################
 ############################## EXPERIMENTAL RDFS ################################
