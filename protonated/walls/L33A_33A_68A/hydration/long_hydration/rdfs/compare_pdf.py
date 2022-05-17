@@ -197,6 +197,7 @@ if bulk:
 
 else:
     atom_idx = [atom.index for atom in top.atoms]
+    bulk_lims = None
 
 # Calculate the average form factor
 if scale:
@@ -211,7 +212,8 @@ if scale:
 
 else:
      print('Finding pairs of atoms...')
-     scaling_factors = None
+     form_factors = json.load(open(json_factors))
+     avg_f = 1
 
 load_time = time()
 # Apply the inputs to select only desired atom pairs
@@ -231,9 +233,14 @@ for i in atom_idx:
                         scaling.append(f_i*f_j)
                         
                 else: # if not water, check if they should be excluded
-                    if j not in bonding[i]['exclusions']:
-                        pairs.append([i,j])
-                        scaling.append(f_i*f_j)
+                    if bulk:
+                        if j not in bonding[i]['exclusions']: # np.where corrects the mismatch between bonding and atom_idx
+                            pairs.append([i,j])
+                            scaling.append(f_i*f_j)
+                    else:
+                        if j+1 not in bonding[i+1]['exclusions']: 
+                            pairs.append([i,j])
+                            scaling.append(f_i*f_j)
             else:
                 pairs.append([i,j])
                 scaling.append(f_i*f_j)
@@ -265,7 +272,7 @@ if plot:
     fig, ax = plt.subplots(1,1)
     plt.plot(r*10, g_r, c='b', label='Simulation')
     plt.xlim(0,10)
-    # plt.ylim(-5,10)
+    plt.ylim(-1,5)
     plt.ylabel('g(r)')
     plt.xlabel('r (Å)')
 
@@ -283,7 +290,7 @@ if plot:
 
 filename = './TN4'   # input file with G(r) data
 rho = 0.0953         # atomic number density
-rho_sim = True       # if True, calculate the number density from simulation
+rho_sim = False       # if True, calculate the number density from simulation
 
 #################################################################################
 
