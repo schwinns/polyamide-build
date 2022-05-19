@@ -11,7 +11,7 @@ from time import time
 
 # compute_rdf taken from MDTraj and modified to use truncated unit cell
 def compute_rdf(traj, pairs, r_range=None, bin_width=0.005, n_bins=None,
-                periodic=True, opt=True, bulk_lims=None, scale=True, scaling_factors=None):
+                periodic=True, opt=True, bulk_lims=None, scale=False, scaling_factors=None):
     """Compute radial distribution functions for pairs in every frame.
     Parameters
     ----------
@@ -54,25 +54,19 @@ def compute_rdf(traj, pairs, r_range=None, bin_width=0.005, n_bins=None,
         n_bins = int((r_range[1] - r_range[0]) / bin_width)
 
     distances = md.geometry.distance.compute_distances(traj, pairs, periodic=periodic, opt=opt)
-    print('\tFinished computing distances... distances array.shape = (%d, %d)' %(distances.shape[0], distances.shape[1]))
+    # print('\tFinished computing distances... distances array.shape = (%d, %d)' %(distances.shape[0], distances.shape[1]))
     if scale:
         g_r, edges = np.histogram(distances, range=r_range, bins=n_bins, weights=scaling_factors)
         r = 0.5 * (edges[1:] + edges[:-1])
-        print('\tFinished the weighted histogram')
+        # print('\tFinished the weighted histogram')
     else:
         g_r, edges = np.histogram(distances, range=r_range, bins=n_bins)
         r = 0.5 * (edges[1:] + edges[:-1])
 
     if bulk_lims is not None:
-        unitcell_vol = traj.unitcell_volumes * ((bulk_lims[1,:] - bulk_lims[0,:]) / traj.unitcell_lengths[:,2])
-        print(unitcell_vol)
-        plt.plot(unitcell_vol, label='bulk')
-        plt.plot(traj.unitcell_volumes, label='full')
-        plt.legend()
-        plt.show()
-        exit()
+        unitcell_vol = traj.unitcell_volumes * ((bulk_lims[:,1] - bulk_lims[:,0]) / traj.unitcell_lengths[:,2])
     else:
-        print('\tDefaulting to scaling by full simulation cell...')
+        # print('\tDefaulting to scaling by full simulation cell...')
         unitcell_vol = traj.unitcell_volumes
 
     # Normalize by volume of the spherical shell.
@@ -170,7 +164,7 @@ bulk = True                         # if True, only calculate RDF for the bulk d
 bulk_lims = np.array([1.5,4.5])     # bulk cutoffs in nm (z-direction)
 scale = True                        # if True, scale the RDF by atomic form factors
 
-frame_start = 390                   # first frame to calculate RDF
+frame_start = 391                   # first frame to calculate RDF
 frame_end = 401                     # last frame to calculate RDF
 timing = True                       # if True, display timing information
 plot = True                         # if True, show final RDF plot
@@ -179,7 +173,7 @@ traj = '../hydrate.xtc'             # input trajectory
 gro = '../hydrate.gro'              # input coordinate file
 topology = '../PA_hydrated.top'     # input PA topology
 json_factors = './form_factors.json'# json file with form factors
-filename = './output.xvg'           # output RDF filename
+filename = './scaled_bulk_not_periodic.xvg'           # output RDF filename
 
 #################################################################################
 
@@ -196,18 +190,21 @@ if excl:
     bonding = get_bonding(topology)
 if bulk:
     atom_idx = []
+    bulk_true = np.zeros((frame_end - frame_start, 2))
+    n = 0
     for f in np.arange(frame_start, frame_end):
         lb = np.where(t.xyz[f,:,2] > bulk_lims[0])[0]
         ub = np.where(t.xyz[f,:,2] < bulk_lims[1])[0]
         atom_idx = np.array([i for i in lb if i in ub]) # Only use the last frame for atom indices
 
-        bulk_true = np.array([t.xyz[f,atom_idx,2].min(), t.xyz[f,atom_idx,2].max()])
-
+        bulk_true[n,:] = np.array([t.xyz[f,atom_idx,2].min(), t.xyz[f,atom_idx,2].max()])
+        n += 1
+    
     print('Calculating RDF for bulk membrane. Found %d atoms within %.2f nm to %.2f nm' %(len(atom_idx), bulk_lims[0], bulk_lims[1]) )
 
 else:
     atom_idx = [atom.index for atom in top.atoms]
-    bulk_lims = None
+    bulk_true = None
 
 # Calculate the average form factor
 if scale:
@@ -229,6 +226,7 @@ load_time = time()
 # Apply the inputs to select only desired atom pairs
 scaling = []
 pairs = []
+n = 0
 for i in atom_idx:
     for j in atom_idx:
         if i != j:
@@ -270,13 +268,6 @@ xvg.write(filename)
 print('----------------------------------------------------------------')
 
 rdf_time = time()
-if timing:
-    print('\n\n----------------------- TIMING BREAKDOWN -----------------------')
-    print('\tLoading trajectory and inputs:\t\t%f' %(load_time - start))
-    print('\tFinding pairs:\t\t\t\t%f' %(pair_time - load_time))
-    print('\tRDF computations:\t\t\t%f' %(rdf_time - pair_time))
-    print('\n\tTotal time:\t\t\t\t%f' %(rdf_time - start))
-    print('----------------------------------------------------------------')
 
 if plot:
     fig, ax = plt.subplots(1,1)
@@ -327,6 +318,17 @@ max_idx = np.where(exp_data[:,0] == np.max(exp_data[:,0]))[0]
 clean = np.zeros((max_idx[0] - min_idx[0], 2))
 clean[:,0] = exp_data[min_idx[0]:max_idx[0],0]
 clean[:,1] = exp_data[min_idx[0]:max_idx[0],1] / (4*np.pi*clean[:,0]*rho) + 1
+
+# Print timing information
+exp_time = time()
+if timing:
+    print('\n\n----------------------- TIMING BREAKDOWN -----------------------')
+    print('\tLoading trajectory and inputs:\t\t%f' %(load_time - start))
+    print('\tFinding pairs:\t\t\t\t%f' %(pair_time - load_time))
+    print('\tRDF computations:\t\t\t%f' %(rdf_time - pair_time))
+    print('\tLoading experimental data:\t\t%f' %(exp_time - rdf_time))
+    print('\n\tTotal time:\t\t\t\t%f' %(exp_time - start))
+    print('----------------------------------------------------------------')
 
 # Plot the data
 if plot:
