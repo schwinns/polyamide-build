@@ -176,48 +176,48 @@ filename = './output.xvg'           # output RDF filename
 
 # Load trajectory
 start = time()
-print('\n\n--------------------------- PROGRESS ---------------------------')
-print("Loading trajectory '%s' with topology '%s'" %(traj, gro) )
-t = md.load(traj, top=gro)
-top = t.topology
+# print('\n\n--------------------------- PROGRESS ---------------------------')
+# print("Loading trajectory '%s' with topology '%s'" %(traj, gro) )
+# t = md.load(traj, top=gro)
+# top = t.topology
 
 # Get necessary information for the input parameters
 if excl:
     print("Excluding bonded atoms. Getting bonding information from '%s'" %(topology))
     bonding = get_bonding(topology)
-if bulk:
-    atom_idx = []
-    bulk_true = np.zeros((frame_end - frame_start, 2))
-    n = 0
-    for f in np.arange(frame_start, frame_end):
-        lb = np.where(t.xyz[f,:,2] > bulk_lims[0])[0]
-        ub = np.where(t.xyz[f,:,2] < bulk_lims[1])[0]
-        atom_idx = np.array([i for i in lb if i in ub]) # Only use the last frame for atom indices
+# if bulk:
+#     atom_idx = []
+#     bulk_true = np.zeros((frame_end - frame_start, 2))
+#     n = 0
+#     for f in np.arange(frame_start, frame_end):
+#         lb = np.where(t.xyz[f,:,2] > bulk_lims[0])[0]
+#         ub = np.where(t.xyz[f,:,2] < bulk_lims[1])[0]
+#         atom_idx = np.array([i for i in lb if i in ub]) # Only use the last frame for atom indices
 
-        bulk_true[n,:] = np.array([t.xyz[f,atom_idx,2].min(), t.xyz[f,atom_idx,2].max()])
-        n += 1
+#         bulk_true[n,:] = np.array([t.xyz[f,atom_idx,2].min(), t.xyz[f,atom_idx,2].max()])
+#         n += 1
     
-    print('Calculating RDF for bulk membrane. Found %d atoms within %.2f nm to %.2f nm' %(len(atom_idx), bulk_lims[0], bulk_lims[1]) )
+#     print('Calculating RDF for bulk membrane. Found %d atoms within %.2f nm to %.2f nm' %(len(atom_idx), bulk_lims[0], bulk_lims[1]) )
 
-else:
-    atom_idx = [atom.index for atom in top.atoms]
-    bulk_true = None
+# else:
+#     atom_idx = [atom.index for atom in top.atoms]
+#     bulk_true = None
 
-# Calculate the average form factor
-if scale:
-    print('Finding pairs of atoms and pre-calculating form factors...')
-    form_factors = json.load(open(json_factors))
-    factors = np.zeros(len(atom_idx))
-    for i, idx in enumerate(atom_idx):
-        f_i = form_factors[top.atom(idx).element.symbol]
-        factors[i] = f_i
+# # Calculate the average form factor
+# if scale:
+#     print('Finding pairs of atoms and pre-calculating form factors...')
+#     form_factors = json.load(open(json_factors))
+#     factors = np.zeros(len(atom_idx))
+#     for i, idx in enumerate(atom_idx):
+#         f_i = form_factors[top.atom(idx).element.symbol]
+#         factors[i] = f_i
 
-    avg_f = factors.mean()
+#     avg_f = factors.mean()
 
-else:
-     print('Finding pairs of atoms...')
-     form_factors = json.load(open(json_factors))
-     avg_f = 1
+# else:
+#      print('Finding pairs of atoms...')
+#      form_factors = json.load(open(json_factors))
+#      avg_f = 1
 
 load_time = time()
 # Apply the inputs to select only desired atom pairs

@@ -42,12 +42,12 @@ def get_bonding(topology):
 
 bulk_lims = np.array([2.0,6.0])     # bulk cutoffs in nm (z-direction)
 
-frame_start = 390
+frame_start = 391
 frame_end = 401
 
 traj = '../hydrate_center.xtc'             # input trajectory
 gro = '../hydrate_center.gro'              # input coordinate file
-gro_out = './gro_files/output_'                   # output GRO filename
+gro_out = './gro_files/hydrate_center_'                   # output GRO filename
 
 # Load trajectory
 t = md.load(traj, top=gro)
