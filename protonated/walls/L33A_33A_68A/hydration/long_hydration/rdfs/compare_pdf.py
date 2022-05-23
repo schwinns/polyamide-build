@@ -1,6 +1,3 @@
-# Script to quickly plot .xvg files from GROMACS
-# Uses GromacsWrapper so should be in LLC-env or gro_wrap
-
 import numpy as np
 from gromacs.formats import XVG
 import mdtraj as md
@@ -161,7 +158,7 @@ def get_bonding(topology):
 excl = True                         # if True, do not calculate interatomic distances for 1-2, 1-3, 1-4 atoms in molecules
 water = True                        # if True, include water in RDF
 bulk = True                         # if True, only calculate RDF for the bulk defined by bulk_lims (only consider atoms within cutoff in last frame)
-bulk_lims = np.array([1.5,4.5])     # bulk cutoffs in nm (z-direction)
+bulk_lims = np.array([2.0,6.0])     # bulk cutoffs in nm (z-direction)
 scale = True                        # if True, scale the RDF by atomic form factors
 
 frame_start = 391                   # first frame to calculate RDF
@@ -169,11 +166,11 @@ frame_end = 401                     # last frame to calculate RDF
 timing = True                       # if True, display timing information
 plot = True                         # if True, show final RDF plot
 
-traj = '../hydrate.xtc'             # input trajectory
-gro = '../hydrate.gro'              # input coordinate file
+traj = '../hydrate_center.xtc'             # input trajectory
+gro = '../hydrate_center.gro'              # input coordinate file
 topology = '../PA_hydrated.top'     # input PA topology
 json_factors = './form_factors.json'# json file with form factors
-filename = './scaled_bulk_not_periodic.xvg'           # output RDF filename
+filename = './output.xvg'           # output RDF filename
 
 #################################################################################
 
