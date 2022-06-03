@@ -22,8 +22,8 @@ rdf = sim_data[1,:] #- sim_data[1,np.where(r == 10)[0]]
 
 fig, ax = plt.subplots(1,1)
 plt.plot(r, rdf, c='b', label='Simulation')
-plt.xlim(0,10)
-# plt.ylim(-0.25,5)
+plt.xlim(0,8)
+plt.ylim(-0.25,5)
 plt.ylabel('g(r)')
 plt.xlabel('r (A)')
 
